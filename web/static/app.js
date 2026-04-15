@@ -639,6 +639,17 @@ function switchMobileTab(panel) {
 
 
 /* ═══════════════════════════════
+   TABLET: Edit panel slide-over
+   ═══════════════════════════════ */
+function toggleEditPanel() {
+  const panel = document.getElementById("editorPanel");
+  const overlay = document.getElementById("mobileOverlay");
+  panel.classList.toggle("open");
+  overlay.classList.toggle("visible");
+}
+
+
+/* ═══════════════════════════════
    MOBILE: Menu overlay
    ═══════════════════════════════ */
 function toggleMobileMenu() {
@@ -659,9 +670,13 @@ function closeMobileMenu() {
 
 // Handle window resize — reset panel states
 window.addEventListener("resize", () => {
-  if (window.innerWidth > 640) {
-    // Reset mobile classes
+  if (window.innerWidth > 900) {
+    // Desktop: reset all mobile/tablet states
     document.querySelectorAll(".mobile-active").forEach((el) => el.classList.remove("mobile-active"));
     closeMobileMenu();
+  } else if (window.innerWidth <= 640) {
+    // Make sure at least one tab is active on mobile
+    const hasActive = document.querySelector(".mobile-active");
+    if (!hasActive) switchMobileTab("templates");
   }
 });

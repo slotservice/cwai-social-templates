@@ -704,6 +704,33 @@ body {
 }
 
 
+/* ── Edit panel toggle (for tablet) ── */
+.edit-toggle-btn {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: 20px;
+  z-index: 55;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--teal));
+  border: none;
+  color: var(--bg-body);
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,210,200,0.3);
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.edit-toggle-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(0,210,200,0.4);
+}
+
+
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE — Tablet (≤1100px)
    ═══════════════════════════════════════════════════════ */
@@ -718,7 +745,7 @@ body {
 
 
 /* ═══════════════════════════════════════════════════════
-   RESPONSIVE — Small tablet (≤900px): collapse edit panel
+   RESPONSIVE — Small tablet (≤900px): edit panel as slide-over
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .app-layout {
@@ -741,15 +768,14 @@ body {
     transform: translateX(0);
   }
 
-  /* Show a toggle button for edit panel */
-  .mobile-edit-toggle {
-    display: flex !important;
+  .edit-toggle-btn {
+    display: flex;
   }
 }
 
 
 /* ═══════════════════════════════════════════════════════
-   RESPONSIVE — Mobile (≤640px): full stack layout
+   RESPONSIVE — Mobile (≤640px): full tabbed layout
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
   .app-header {
@@ -757,7 +783,7 @@ body {
     height: 48px;
   }
 
-  .mobile-menu-btn { display: flex; }
+  .brand { font-size: 15px; }
   .header-title { display: none; }
   .header-divider { display: none; }
 
@@ -765,28 +791,26 @@ body {
     display: flex;
   }
 
+  .edit-toggle-btn { display: none; }
+
   .app-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
   }
 
-  /* All panels are full-screen, toggled via mobile tabs */
+  /* All panels fill the space, only one visible at a time */
   .sidebar,
   .preview-area,
   .edit-panel {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border: none;
-    transform: none;
-    width: 100%;
-  }
-
-  .sidebar { display: none; }
-  .preview-area { display: none; }
-  .edit-panel {
     display: none;
+    flex: 1;
+    overflow-y: auto;
+    border: none;
     position: relative;
+    width: 100%;
+    transform: none;
     box-shadow: none;
   }
 
@@ -796,13 +820,12 @@ body {
     display: flex;
   }
 
-  /* Stack the layout properly */
-  .app-layout {
-    position: relative;
+  .preview-area {
+    padding: 10px;
   }
 
-  .preview-area {
-    padding: 12px;
+  .preview-area.mobile-active {
+    flex-direction: column;
   }
 
   .sidebar-inner {
@@ -810,19 +833,94 @@ body {
   }
 
   .edit-fields {
-    padding: 10px 12px 80px;
+    padding: 10px 12px 20px;
   }
 
   .edit-panel-header {
     padding: 14px 12px 0;
   }
 
-  /* Fixed export button on mobile */
+  /* Template buttons: 2-column grid on mobile */
+  .template-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .template-btn {
+    padding: 12px 10px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .template-btn .tpl-icon { font-size: 20px; }
+
+  /* Size buttons horizontal on mobile */
+  .size-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  .size-btn {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 10px;
+  }
+
+  /* Sticky export on mobile */
   .sidebar-actions {
     position: sticky;
     bottom: 0;
     background: var(--bg-surface);
-    padding: 12px 0 6px;
+    padding: 12px 12px 16px;
     border-top: 1px solid var(--border);
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+  }
+
+  /* Preview scales down further */
+  .preview-container {
+    min-height: 250px;
+  }
+
+  .preview-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  /* Array items stack on very small screens */
+  .array-header { display: none; }
+  .array-item {
+    flex-wrap: wrap;
+  }
+  .array-item input {
+    min-width: 60px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — Very small phone (≤400px)
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 400px) {
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .size-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .brand { font-size: 14px; }
+
+  .mobile-tab span:not(.tab-icon) {
+    font-size: 9px;
   }
 }
