@@ -1,160 +1,170 @@
-# CWAI Social Media Template Generator
+# CrowdWiseAI — Social Media Template Generator
 
-A Python-based system for generating editable, reusable social media post images for **X/Twitter** and **Instagram**, built for CrowdWiseAI.
+Python-based system for creating editable, reusable social media post images for **X/Twitter** and **Instagram**. Includes a web UI for visual editing and exports to both **PNG** (for posting) and **SVG** (for Figma / automation).
 
-## Design System
+## Quick Start
 
-Extracted from client sample files (`CWAI Hero.html`, `templatesbreakout_table.html`, `X Post Template A/B/C.pptx`):
+### First time setup (one-time)
+Double-click **`install.bat`**  
+This installs Python, dependencies, and the browser engine for image export.
 
-- **Color palette**: Dark premium tech aesthetic — `#0a0e1a` backgrounds, cyan/teal accents (`#00d2c8`, `#38e6b4`, `#00b4dc`)
-- **Typography**: Outfit (headings/body), JetBrains Mono (data/labels)
-- **Visual motifs**: Grid backgrounds, glowing orbs, corner brackets, scanline animations, gradient text
-- **Spacing**: 44px horizontal padding, 28px vertical padding, 16px corner inset
+### Run the app
+Double-click **`run.bat`**  
+Opens the template editor in your browser at `http://localhost:5000`
 
-## Template Families
+## Web UI
 
-| Family | Variants | Description |
-|--------|----------|-------------|
-| Hero | `hero_a`, `hero_b` | Centered pulse-ring hero (matches CWAI Hero.html) and left-aligned feature list variant |
-| Surging | `surging_a`, `surging_b` | Single tool spotlight card and multi-tool ranked list |
-| Leaderboard | `leaderboard_a`, `leaderboard_b` | Table-style breakout ranking (matches breakout_table.html) and card-grid layout |
-| Insight | `insight_a` | Quote/data card with highlighted statistics |
-| Compare | `compare_a` | Side-by-side versus comparison card |
-| Newsletter | `newsletter_a` | Report/newsletter promo card with CTA |
+The app has a 3-panel layout:
+- **Left sidebar** — Pick a template and output size
+- **Center** — Live preview that updates as you edit
+- **Right panel** — Edit all content fields (text, metrics, rankings, icons)
+
+### Export options
+| Button | Output |
+|--------|--------|
+| **Export PNG + SVG** | Downloads both files — PNG for posting, SVG for Figma/automation |
+| **PNG only** | Just the image for social media |
+| **SVG only** | Editable design file with labeled layers |
+
+## Templates (16 total)
+
+### Hero Graphics (2)
+| Template | Layout |
+|----------|--------|
+| `hero_a` | Centered hero with pulse rings (matches CWAI Hero sample) |
+| `hero_b` | Left-aligned hero with feature bullet list |
+
+### Surging / Tool Spotlight (6)
+| Template | Layout |
+|----------|--------|
+| `surging_a` | Single tool spotlight — centered with stats grid |
+| `surging_b` | Multi-tool ranked list — 5 rows with growth arrows |
+| `surging_c` | Horizontal split — big stat on left, tool info on right |
+| `surging_d` | Growth bar chart — horizontal bars ranked by growth |
+| `surging_e` | Minimal spotlight — tool name + massive growth number |
+| `surging_f` | Category trio — 3 tools side-by-side as cards |
+
+### Breakout Leaderboard (3)
+| Template | Layout |
+|----------|--------|
+| `leaderboard_a` | Table-style ranking with columns (matches breakout_table sample) |
+| `leaderboard_b` | Card grid — 2-column layout with rank badges |
+| `leaderboard_c` | Podium style — top 3 highlighted + compact runner-up list |
+
+### Insight / Quote / Data (2)
+| Template | Layout |
+|----------|--------|
+| `insight_a` | Quote card with highlighted data points below |
+| `insight_b` | Data stats card — 3 large number cards with change indicators |
+
+### Compare / Versus (2)
+| Template | Layout |
+|----------|--------|
+| `compare_a` | Side-by-side card comparison with VS badge |
+| `compare_b` | Stat-by-stat horizontal bars growing from center |
+
+### Report / Newsletter Promo (1)
+| Template | Layout |
+|----------|--------|
+| `newsletter_a` | Report promo card with highlights and CTA button |
 
 ## Output Sizes
 
 | Key | Dimensions | Platform |
 |-----|-----------|----------|
-| `x_landscape` | 1200 x 675 | X/Twitter |
+| `x_landscape` | 1200 x 675 | X / Twitter |
 | `ig_square` | 1080 x 1080 | Instagram square |
 | `ig_portrait` | 1080 x 1350 | Instagram portrait |
 
-## Setup
+## SVG Structure (for automation)
 
-```bash
-# 1. Install Python dependencies
-pip install -r requirements.txt
+Every SVG template follows a clean, consistent structure for programmatic data injection:
 
-# 2. Install Playwright browser (one-time)
-python -m playwright install chromium
+```xml
+<svg>
+  <defs>                    <!-- Shared gradients, filters, patterns -->
+  <g id="bg-static">       <!-- Background, grid, glow orbs — never changes -->
+  <g id="decor-static">    <!-- Particles, pulse rings — never changes -->
+  <g id="chrome-static">   <!-- Corner brackets, footer bar — never changes -->
+  <g id="content-dynamic"> <!-- ALL data fields with labeled IDs -->
 ```
 
-## Usage
+### Dynamic element IDs
+All editable fields have clear, consistent IDs:
+- `TITLE`, `TITLE_PREFIX`, `TITLE_HIGHLIGHT`, `TITLE_SUFFIX`
+- `SUBTITLE`, `TAGLINE`, `DESCRIPTION`
+- `TOOL_0_NAME`, `TOOL_0_GROWTH`, `TOOL_0_SIGNAL`
+- `ROW_0_RANK`, `ROW_0_NAME`, `ROW_0_SCORE`
+- `STAT_0_VALUE`, `STAT_0_LABEL`
+- `METRIC_0_VALUE`, `METRIC_0_LABEL`
+- `FOOTER_LEFT`, `FOOTER_RIGHT`
 
-### Generate a single post
+### Text behavior
+- All text as editable `<text>` elements (not outlines)
+- Fixed font sizes per template — no auto-resize
+- Consistent fonts: Outfit (headings), JetBrains Mono (data)
 
-```bash
-# X/Twitter landscape (default)
-python generate.py -t hero_a -d data/hero_a.json
+## Design System
 
-# Instagram square
-python generate.py -t hero_a -d data/hero_a.json -s ig_square
-
-# Instagram portrait
-python generate.py -t leaderboard_a -d data/leaderboard_a.json -s ig_portrait
-```
-
-### Generate all templates
-
-```bash
-python generate.py -t all -d data/
-```
-
-### Debug — output HTML instead of PNG
-
-```bash
-python generate.py -t hero_a -d data/hero_a.json --html-only
-```
-
-### Custom output path
-
-```bash
-python generate.py -t hero_a -d data/hero_a.json -o my_hero_post.png
-```
+Extracted from client samples:
+- **Backgrounds**: `#0a0e1a` body, gradient card `#0b1026 → #0d1530 → #091220`
+- **Accents**: `#00d2c8` (cyan), `#38e6b4` (teal), `#00b4dc` (blue)
+- **Fonts**: Outfit (headings/body), JetBrains Mono (data/labels)
+- **Effects**: Grid background, radial glow orbs, corner brackets, scanline animation
 
 ## Folder Structure
 
 ```
 cwai-social-templates/
-├── generate.py              # CLI generator script
+├── install.bat              # One-time setup (installs Python + deps)
+├── run.bat                  # Launch the web app
+├── app.py                   # Flask web server (main entry point)
+├── generate.py              # CLI generator (batch rendering)
 ├── config.py                # Design tokens, sizes, paths
 ├── requirements.txt         # Python dependencies
-├── README.md
-├── templates/
-│   ├── partials/
-│   │   └── base.html        # Shared base template (design system CSS)
-│   ├── hero/
-│   │   ├── hero_a.html      # Centered hero with pulse rings
-│   │   └── hero_b.html      # Left-aligned hero with feature list
-│   ├── surging/
-│   │   ├── surging_a.html   # Single tool spotlight
-│   │   └── surging_b.html   # Multi-tool surging list
-│   ├── leaderboard/
-│   │   ├── leaderboard_a.html  # Table-style leaderboard
-│   │   └── leaderboard_b.html  # Card-grid leaderboard
-│   ├── insight/
-│   │   └── insight_a.html   # Quote / data card
-│   ├── compare/
-│   │   └── compare_a.html   # Versus comparison
-│   └── newsletter/
-│       └── newsletter_a.html # Report promo card
-├── data/                    # Sample JSON data files
-│   ├── hero_a.json
-│   ├── hero_b.json
-│   ├── surging_a.json
-│   ├── surging_b.json
-│   ├── leaderboard_a.json
-│   ├── leaderboard_b.json
-│   ├── insight_a.json
-│   ├── compare_a.json
-│   └── newsletter_a.json
-├── output/                  # Generated images go here
-└── assets/                  # Logos, icons, backgrounds
+├── web/                     # Web UI
+│   ├── index.html
+│   └── static/
+│       ├── app.js           # Frontend logic + icon picker
+│       └── style.css        # Responsive dark theme
+├── svg_templates/           # SVG templates (for automation + Figma)
+│   ├── partials/            # Shared defs, backgrounds, chrome
+│   ├── hero/                # hero_a.svg, hero_b.svg
+│   ├── surging/             # surging_a.svg through surging_f.svg
+│   ├── leaderboard/         # leaderboard_a.svg through leaderboard_c.svg
+│   ├── insight/             # insight_a.svg, insight_b.svg
+│   ├── compare/             # compare_a.svg, compare_b.svg
+│   └── newsletter/          # newsletter_a.svg
+├── templates/               # HTML/CSS templates (for web UI preview)
+│   ├── partials/base.html
+│   └── [same families as svg_templates]
+├── data/                    # Sample JSON data (one per template)
+├── output/                  # Generated PNG + SVG files
+└── assets/                  # Logos, icons (add your files here)
+```
+
+## CLI Usage (alternative to web UI)
+
+```bash
+# Single template
+python generate.py -t hero_a -d data/hero_a.json
+
+# Different size
+python generate.py -t hero_a -d data/hero_a.json -s ig_square
+
+# All templates
+python generate.py -t all -d data/
+
+# HTML debug output
+python generate.py -t hero_a -d data/hero_a.json --html-only
 ```
 
 ## Editing Content
 
-Edit the JSON data files to change post content. Each template accepts specific fields:
+Edit the JSON files in `data/` or use the web UI. Each template accepts specific fields — see the edit panel in the web UI for the complete field list per template.
 
-### Hero (`hero_a`, `hero_b`)
-- `tagline_top`, `title_prefix`, `title_highlight`, `title_suffix`, `subtitle`
-- `metrics[]` — array of `{label, value}`
-- `features[]` — array of strings (hero_b only)
-- `logo_path`, `footer_left`, `footer_right`
+## Adding Your Logo
 
-### Surging (`surging_a`)
-- `icon`, `category`, `tool_name`, `description`
-- `stats[]` — array of `{label, value}`
-- `signal` — `HOT`, `RISING`, or `WATCH`
-
-### Surging (`surging_b`)
-- `tools[]` — array of `{name, description, growth, signal}`
-- `title`, `title_highlight`, `title_suffix`
-
-### Leaderboard (`leaderboard_a`, `leaderboard_b`)
-- `rows[]` — array of `{name, score, growth, signal, bar_pct}`
-- `title_prefix`, `title_highlight`, `title_suffix`
-
-### Insight (`insight_a`)
-- `quote`, `source`, `label`
-- `data_points[]` — array of `{value, label}`
-
-### Compare (`compare_a`)
-- `tool_a` / `tool_b` — each with `{name, icon, stats[]}`
-- `winner` — `"a"` or `"b"`
-- `verdict` — HTML string
-
-### Newsletter (`newsletter_a`)
-- `badge`, `title_prefix`, `title_highlight`, `subtitle`
-- `highlights[]` — array of `{icon, text}`
-- `cta_text`, `date`
-
-## Adding New Templates
-
-1. Create a new folder under `templates/` (or add to existing family)
-2. Create an HTML file that extends `partials/base.html`
-3. Use `{% block extra_styles %}` for template-specific CSS
-4. Use `{% block body %}` for template HTML
-5. Create a matching JSON data file in `data/`
-6. The generator auto-discovers templates by folder/filename convention
+1. Place your logo file (PNG or SVG) in the `assets/` folder
+2. Update the `logo_path` field in the JSON data to point to your file
+3. The logo will appear in templates that support it (hero, leaderboard, surging_b, compare, newsletter)
