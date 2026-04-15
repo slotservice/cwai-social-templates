@@ -1,0 +1,15 @@
+{
+  "icon": "🚀",
+  "category": "Tool Spotlight",
+  "tool_name": "Ollama",
+  "description": "Run large language models locally with a simple CLI. The fastest-growing local LLM tool in the ecosystem.",
+  "stats": [
+    { "label": "GitHub Stars", "value": "128.4k" },
+    { "label": "7d Growth", "value": "+4,210" },
+    { "label": "Forks", "value": "9.8k" },
+    { "label": "Contributors", "value": "520+" }
+  ],
+  "signal": "HOT",
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdWiseAI — Template Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="brand">CrowdWise<span class="brand-ai">AI</span></span>
+      <span class="header-divider"></span>
+      <span class="header-title">Template Generator</span>
+    </div>
+    <div class="header-right">
+      <span class="header-status" id="status">Ready</span>
+    </div>
+  </header>
+
+  <!-- ─── Mobile Tab Bar ─── -->
+  <div class="mobile-tabs" id="mobileTabs">
+    <button class="mobile-tab active" data-panel="templates" onclick="switchMobileTab('templates')">
+      <span class="tab-icon">📋</span>
+      <span>Templates</span>
+    </button>
+    <button class="mobile-tab" data-panel="preview" onclick="switchMobileTab('preview')">
+      <span class="tab-icon">👁</span>
+      <span>Preview</span>
+    </button>
+    <button class="mobile-tab" data-panel="editor" onclick="switchMobileTab('editor')">
+      <span class="tab-icon">✏️</span>
+      <span>Edit</span>
+    </button>
+  </div>
+
+  <!-- ─── Main Layout ─── -->
+  <div class="app-layout">
+
+    <!-- ─── Left Sidebar: Template + Size selection ─── -->
+    <aside class="sidebar" id="sidebarPanel">
+      <div class="sidebar-inner">
+        <div class="sidebar-section">
+          <div class="section-label">Template Family</div>
+          <div class="template-grid" id="templateGrid"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-label">Output Size</div>
+          <div class="size-buttons" id="sizeButtons"></div>
+        </div>
+
+        <div class="sidebar-section sidebar-actions">
+          <button class="btn btn-export" id="btnExport" onclick="exportPng()" disabled>
+            <span class="btn-icon">&#11015;</span> Export PNG
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ─── Center: Live Preview ─── -->
+    <main class="preview-area" id="previewPanel">
+      <div class="preview-header">
+        <div class="preview-label">Live Preview</div>
+        <div class="preview-info" id="previewInfo"></div>
+      </div>
+      <div class="preview-container" id="previewContainer">
+        <div class="preview-placeholder" id="previewPlaceholder">
+          <div class="placeholder-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(0,210,200,0.25)" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="3"/>
+              <circle cx="8.5" cy="8.5" r="2"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+          </div>
+          <div class="placeholder-text">Select a template to begin</div>
+          <div class="placeholder-hint">Choose from the sidebar, then edit content on the right</div>
+        </div>
+        <iframe id="previewFrame" class="preview-frame" style="display:none;"></iframe>
+        <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ─── Right Panel: Edit Fields ─── -->
+    <aside class="edit-panel" id="editorPanel">
+      <div class="edit-panel-header">
+        <div class="section-label">Edit Content</div>
+        <button class="btn-auto-preview" id="btnAutoPreview" onclick="toggleAutoPreview()" title="Auto-refresh preview">
+          <span class="auto-dot active"></span>
+          <span>Auto</span>
+        </button>
+      </div>
+      <div class="edit-fields" id="editFields">
+        <div class="edit-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(0,210,200,0.2)" stroke-width="1.5">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          <span>Select a template to see editable fields</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ─── Mobile overlay backdrop ─── -->
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

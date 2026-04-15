@@ -1,0 +1,229 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Compare A — versus card */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .compare-header {
+    padding: 28px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .compare-title {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}32{% else %}38{% endif %}px;
+    color: {{ design.colors.text_primary }};
+    line-height: 1.1;
+  }
+
+  .compare-subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.text_muted }};
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  .versus-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 20px 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .vs-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 28px 20px;
+    border-radius: 12px;
+    background: rgba(0,210,200,0.02);
+    border: 1px solid rgba(0,210,200,0.08);
+  }
+
+  .vs-card.winner {
+    background: rgba(0,210,200,0.06);
+    border-color: rgba(0,210,200,0.2);
+    box-shadow: 0 0 30px rgba(0,210,200,0.06);
+  }
+
+  .vs-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: rgba(0,210,200,0.06);
+    border: 1px solid rgba(0,210,200,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .vs-name {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 700;
+    font-size: 20px;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .vs-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .vs-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+  }
+
+  .vs-stat .stat-name {
+    color: {{ design.colors.text_muted }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 10px;
+  }
+
+  .vs-stat .stat-val {
+    color: {{ design.colors.text_secondary }};
+    font-weight: 600;
+  }
+
+  .vs-card.winner .vs-stat .stat-val {
+    color: {{ design.colors.cyan }};
+  }
+
+  .vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .vs-badge {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: 18px;
+    color: {{ design.colors.cyan }};
+    background: rgba(0,210,200,0.08);
+    border: 1px solid rgba(0,210,200,0.2);
+    border-radius: 50%;
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0,210,200,0.15);
+  }
+
+  .verdict-bar {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 44px 10px 44px;
+  }
+
+  .verdict-text {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_muted }};
+    letter-spacing: 1px;
+  }
+
+  .verdict-text strong {
+    color: {{ design.colors.cyan }};
+    font-weight: 700;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Head to Head') }}</div>
+  </div>
+
+  <div class="compare-header">
+    <div class="compare-title">{{ data.tool_a.name }} <span class="glow-text">vs</span> {{ data.tool_b.name }}</div>
+    <div class="compare-subtitle">{{ data.subtitle | default('// momentum comparison by CrowdWiseAI') }}</div>
+  </div>
+
+  <div class="versus-area">
+    <div class="vs-card {% if data.winner == 'a' %}winner{% endif %}">
+      {% if data.tool_a.icon %}
+      <div class="vs-icon">{{ data.tool_a.icon }}</div>
+      {% endif %}
+      <div class="vs-name">{{ data.tool_a.name }}</div>
+      <div class="vs-stats">
+        {% for stat in data.tool_a.stats %}
+        <div class="vs-stat">
+          <span class="stat-name">{{ stat.label }}</span>
+          <span class="stat-val">{{ stat.value }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="vs-divider">
+      <div class="vs-badge">VS</div>
+    </div>
+
+    <div class="vs-card {% if data.winner == 'b' %}winner{% endif %}">
+      {% if data.tool_b.icon %}
+      <div class="vs-icon">{{ data.tool_b.icon }}</div>
+      {% endif %}
+      <div class="vs-name">{{ data.tool_b.name }}</div>
+      <div class="vs-stats">
+        {% for stat in data.tool_b.stats %}
+        <div class="vs-stat">
+          <span class="stat-name">{{ stat.label }}</span>
+          <span class="stat-val">{{ stat.value }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% if data.verdict %}
+  <div class="verdict-bar">
+    <div class="verdict-text">{{ data.verdict }}</div>
+  </div>
+  {% endif %}
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

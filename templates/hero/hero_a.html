@@ -1,0 +1,164 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Hero A — centered with pulse rings (matches CWAI Hero.html) */
+  .card {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,210,200,0.08);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .pulse-ring:nth-child(1) { width: 200px; height: 200px; animation: pulse 3s ease-out infinite; }
+  .pulse-ring:nth-child(2) { width: 350px; height: 350px; animation: pulse 3s ease-out infinite 0.5s; }
+  .pulse-ring:nth-child(3) { width: 520px; height: 520px; animation: pulse 3s ease-out infinite 1s; }
+  .pulse-ring:nth-child(4) { width: 700px; height: 700px; animation: pulse 3s ease-out infinite 1.5s; }
+  .pulse-ring:nth-child(5) { width: 900px; height: 900px; animation: pulse 3s ease-out infinite 2s; }
+
+  @keyframes pulse {
+    0%   { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); }
+    50%  { opacity: 0.15; }
+    100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: rgba(0,210,200,0.5);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,210,200,0.3);
+  }
+  .p1 { top: 18%; left: 22%; animation: blink 2.5s infinite; }
+  .p2 { top: 30%; right: 18%; animation: blink 3s infinite 0.5s; }
+  .p3 { bottom: 25%; left: 28%; animation: blink 2s infinite 1s; }
+  .p4 { top: 42%; left: 14%; animation: blink 3.5s infinite 0.3s; }
+  .p5 { bottom: 35%; right: 22%; animation: blink 2.8s infinite 1.2s; }
+  .p6 { top: 22%; left: 55%; animation: blink 2.2s infinite 0.7s; }
+  .p7 { bottom: 18%; right: 35%; animation: blink 3.2s infinite 1.8s; }
+  .p8 { top: 60%; left: 20%; animation: blink 2.6s infinite 0.4s; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  .signal-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,210,200,0.15), transparent);
+  }
+  .sl-1 { top: 30%; left: 5%; width: 200px; transform: rotate(-5deg); }
+  .sl-2 { bottom: 28%; right: 5%; width: 180px; transform: rotate(3deg); }
+  .sl-3 { top: 55%; left: 8%; width: 120px; transform: rotate(-2deg); }
+
+  .center-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+  }
+
+  .logo-img {
+    height: 56px;
+    margin-bottom: 28px;
+    filter: drop-shadow(0 0 30px rgba(0,210,200,0.15));
+  }
+
+  .tagline-top {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero-text {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}42{% elif size_key == 'ig_portrait' %}44{% else %}52{% endif %}px;
+    line-height: 1.05;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: -1px;
+    max-width: 700px;
+  }
+
+  .sub-text {
+    font-family: {{ design.fonts.body }};
+    font-weight: 300;
+    font-size: 17px;
+    color: {{ design.colors.text_dim }};
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+    max-width: 500px;
+    line-height: 1.5;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+  <div class="pulse-ring"></div>
+
+  <div class="particle p1"></div>
+  <div class="particle p2"></div>
+  <div class="particle p3"></div>
+  <div class="particle p4"></div>
+  <div class="particle p5"></div>
+  <div class="particle p6"></div>
+  <div class="particle p7"></div>
+  <div class="particle p8"></div>
+
+  <div class="signal-line sl-1"></div>
+  <div class="signal-line sl-2"></div>
+  <div class="signal-line sl-3"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="center-content">
+    {% if data.logo_path %}
+    <img class="logo-img" src="{{ data.logo_path }}" alt="Logo">
+    {% endif %}
+    <div class="tagline-top">{{ data.tagline_top }}</div>
+    <div class="hero-text">
+      {{ data.title_prefix }} <span class="glow-text">{{ data.title_highlight }}</span> {{ data.title_suffix }}
+    </div>
+    <div class="sub-text">{{ data.subtitle }}</div>
+
+    {% if data.metrics %}
+    <div class="metric-row">
+      {% for m in data.metrics %}
+      <div class="metric-pill">
+        <span class="label">{{ m.label }}</span>
+        <span class="value">{{ m.value }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

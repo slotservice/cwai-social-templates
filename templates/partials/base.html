@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('{{ design.font_imports[0] }}');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: {{ design.colors.bg_primary }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: {{ design.fonts.body }};
+  }
+
+  .card {
+    width: {{ width }}px;
+    height: {{ height }}px;
+    background: linear-gradient(155deg, {{ design.colors.bg_card }} 0%, {{ design.colors.bg_card_mid }} 50%, {{ design.colors.bg_card_end }} 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- Grid background --- */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient({{ design.colors.grid_line }} 1px, transparent 1px),
+      linear-gradient(90deg, {{ design.colors.grid_line }} 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 10%, transparent 70%);
+  }
+
+  /* --- Glowing orbs --- */
+  .glow-1 {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,210,200,0.1) 0%, transparent 60%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+  .glow-2 {
+    position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(56,230,180,0.08) 0%, transparent 70%);
+    top: 20%; right: 15%;
+    border-radius: 50%;
+  }
+  .glow-3 {
+    position: absolute;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(0,180,220,0.07) 0%, transparent 70%);
+    bottom: 15%; left: 12%;
+    border-radius: 50%;
+  }
+
+  /* --- Corner brackets --- */
+  .corner-tl, .corner-tr, .corner-bl, .corner-br {
+    position: absolute;
+    width: 24px; height: 24px;
+    z-index: 2;
+  }
+  .corner-tl { top: 16px; left: 16px; border-top: 1px solid {{ design.colors.border_glow }}; border-left: 1px solid {{ design.colors.border_glow }}; }
+  .corner-tr { top: 16px; right: 16px; border-top: 1px solid {{ design.colors.border_glow }}; border-right: 1px solid {{ design.colors.border_glow }}; }
+  .corner-bl { bottom: 16px; left: 16px; border-bottom: 1px solid {{ design.colors.border_glow }}; border-left: 1px solid {{ design.colors.border_glow }}; }
+  .corner-br { bottom: 16px; right: 16px; border-bottom: 1px solid {{ design.colors.border_glow }}; border-right: 1px solid {{ design.colors.border_glow }}; }
+
+  /* --- Bottom bar --- */
+  .bottom-bar {
+    position: absolute;
+    bottom: 28px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+  }
+  .bottom-bar .signal-tag {
+    font-family: {{ design.fonts.body }};
+    font-size: 13px;
+    font-weight: 300;
+    color: {{ design.colors.text_dim }};
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .bottom-bar .url {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.cyan_dim }};
+    letter-spacing: 1px;
+  }
+
+  /* --- Top bar --- */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-area img {
+    height: 36px;
+  }
+  .logo-area .brand-text {
+    font-family: {{ design.fonts.body }};
+    font-weight: 700;
+    font-size: 18px;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: 0.5px;
+  }
+  .tag {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: rgba(0,210,200,0.06);
+    border: 1px solid rgba(0,210,200,0.15);
+    padding: 5px 14px;
+    border-radius: 4px;
+  }
+
+  /* --- Gradient text --- */
+  .glow-text {
+    background: linear-gradient(90deg, {{ design.colors.cyan }}, {{ design.colors.teal }}, {{ design.colors.blue_accent }});
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(0,210,200,0.2));
+  }
+
+  /* --- Scanline effect --- */
+  .scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,210,200,0.3), transparent);
+    animation: scan 4s ease-in-out infinite;
+    z-index: 1;
+  }
+  @keyframes scan {
+    0%, 100% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* --- Metric pills --- */
+  .metric-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .metric-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,210,200,0.04);
+    border: 1px solid rgba(0,210,200,0.12);
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+  }
+  .metric-pill .label {
+    color: {{ design.colors.text_muted }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .metric-pill .value {
+    color: {{ design.colors.cyan }};
+    font-weight: 700;
+  }
+
+  {% block extra_styles %}{% endblock %}
+</style>
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

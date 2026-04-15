@@ -1,0 +1,43 @@
+{
+  "logo_path": "",
+  "brand": "CrowdWiseAI",
+  "tag": "Surging Now",
+  "title": "Tools",
+  "title_highlight": "Surging",
+  "title_suffix": "This Week",
+  "subtitle": "// tracked by CrowdWiseAI momentum engine",
+  "tools": [
+    {
+      "name": "ollama/ollama",
+      "description": "Run LLMs locally",
+      "growth": "+4,210",
+      "signal": "HOT"
+    },
+    {
+      "name": "langchain-ai/langchain",
+      "description": "LLM application framework",
+      "growth": "+3,850",
+      "signal": "HOT"
+    },
+    {
+      "name": "openai/whisper",
+      "description": "Speech recognition model",
+      "growth": "+2,430",
+      "signal": "RISING"
+    },
+    {
+      "name": "ggerganov/llama.cpp",
+      "description": "LLM inference in C/C++",
+      "growth": "+1,980",
+      "signal": "RISING"
+    },
+    {
+      "name": "microsoft/autogen",
+      "description": "Multi-agent AI framework",
+      "growth": "+1,540",
+      "signal": "WATCH"
+    }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

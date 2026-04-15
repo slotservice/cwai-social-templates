@@ -1,0 +1,22 @@
+{
+  "logo_path": "",
+  "brand": "CrowdWiseAI",
+  "tag": "Live Signal",
+  "title_prefix": "Top AI Repos",
+  "title_highlight": "Breaking Out",
+  "title_suffix": "Right Now",
+  "subtitle": "// tracked by CrowdWiseAI momentum engine",
+  "col_tool": "Tool",
+  "col_score": "Stars",
+  "col_growth": "Δ 7d Growth",
+  "col_signal": "Signal",
+  "rows": [
+    { "name": "ollama/ollama",           "score": "128.4k", "growth": "+4,210", "signal": "HOT",    "bar_pct": 95 },
+    { "name": "langchain-ai/langchain",  "score": "102.7k", "growth": "+3,850", "signal": "HOT",    "bar_pct": 82 },
+    { "name": "openai/whisper",          "score": "74.2k",  "growth": "+2,430", "signal": "RISING", "bar_pct": 65 },
+    { "name": "ggerganov/llama.cpp",     "score": "71.9k",  "growth": "+1,980", "signal": "RISING", "bar_pct": 52 },
+    { "name": "microsoft/autogen",       "score": "38.6k",  "growth": "+1,540", "signal": "WATCH",  "bar_pct": 40 }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

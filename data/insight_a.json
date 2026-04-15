@@ -1,0 +1,12 @@
+{
+  "label": "Data Insight",
+  "quote": "Open-source AI tools grew <span class='highlight'>3.2x faster</span> than proprietary alternatives in Q1 2025 — the ecosystem is choosing openness.",
+  "source": "CrowdWiseAI Quarterly Signal Report",
+  "data_points": [
+    { "value": "3.2x", "label": "Faster Growth" },
+    { "value": "67%", "label": "Open Source Share" },
+    { "value": "2,400+", "label": "Tools Tracked" }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

@@ -1,0 +1,142 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Hero B — left-aligned with feature list */
+  .card {
+    justify-content: center;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: auto;
+    margin-bottom: 28px;
+    filter: drop-shadow(0 0 20px rgba(0,210,200,0.15));
+    align-self: flex-start;
+  }
+
+  .tagline-top {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}38{% elif size_key == 'ig_portrait' %}40{% else %}46{% endif %}px;
+    line-height: 1.1;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: -0.5px;
+    max-width: 650px;
+  }
+
+  .hero-subtitle {
+    font-family: {{ design.fonts.body }};
+    font-weight: 300;
+    font-size: 16px;
+    color: {{ design.colors.text_muted }};
+    margin-top: 16px;
+    max-width: 500px;
+    line-height: 1.5;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: {{ design.fonts.mono }};
+    font-size: 13px;
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .feature-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: {{ design.colors.cyan }};
+    box-shadow: 0 0 8px rgba(0,210,200,0.4);
+    flex-shrink: 0;
+  }
+
+  .right-glow {
+    position: absolute;
+    right: -50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0,210,200,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="right-glow"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="hero-content">
+    {% if data.logo_path %}
+    <img class="logo-img" src="{{ data.logo_path }}" alt="Logo">
+    {% endif %}
+    <div class="tagline-top">{{ data.tagline_top }}</div>
+    <div class="hero-title">
+      {{ data.title_prefix }} <span class="glow-text">{{ data.title_highlight }}</span> {{ data.title_suffix }}
+    </div>
+    <div class="hero-subtitle">{{ data.subtitle }}</div>
+
+    {% if data.features %}
+    <div class="feature-list">
+      {% for feat in data.features %}
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <span>{{ feat }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.metrics %}
+    <div class="metric-row" style="justify-content: flex-start; margin-top: 24px;">
+      {% for m in data.metrics %}
+      <div class="metric-pill">
+        <span class="label">{{ m.label }}</span>
+        <span class="value">{{ m.value }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

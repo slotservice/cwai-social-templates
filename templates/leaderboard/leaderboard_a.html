@@ -1,0 +1,190 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Leaderboard A — direct match to templatesbreakout_table.html */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .headline-area {
+    padding: 22px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .headline {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}32{% else %}38{% endif %}px;
+    line-height: 1.1;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_muted }};
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .leaderboard {
+    flex: 1;
+    padding: 28px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .lb-header {
+    display: grid;
+    grid-template-columns: 44px 1fr 130px 130px 100px;
+    padding: 0 16px 8px 16px;
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    color: rgba(0,210,200,0.45);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(0,210,200,0.1);
+  }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 44px 1fr 130px 130px 100px;
+    align-items: center;
+    padding: 9px 16px;
+    border-radius: 8px;
+    background: rgba(0,210,200,0.02);
+    border: 1px solid rgba(0,210,200,0.06);
+    position: relative;
+  }
+
+  .lb-row.top-row {
+    background: rgba(0,210,200,0.06);
+    border-color: rgba(0,210,200,0.15);
+    box-shadow: 0 0 20px rgba(0,210,200,0.05);
+  }
+
+  .rank {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(0,210,200,0.6);
+  }
+
+  .top-row .rank {
+    color: {{ design.colors.cyan }};
+    text-shadow: 0 0 10px rgba(0,210,200,0.4);
+  }
+
+  .repo-name {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 600;
+    font-size: 15px;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .stars {
+    font-family: {{ design.fonts.mono }};
+    font-size: 13px;
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .momentum-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .momentum-arrow {
+    color: {{ design.colors.teal }};
+    font-size: 14px;
+  }
+
+  .momentum-val {
+    font-family: {{ design.fonts.mono }};
+    font-size: 13px;
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .signal-text {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .momentum-bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, {{ design.colors.cyan }}, {{ design.colors.teal }});
+    border-radius: 0 2px 2px 0;
+    opacity: 0.4;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Live Signal') }}</div>
+  </div>
+
+  <div class="headline-area">
+    <div class="headline">{{ data.title_prefix | default('Top AI Repos') }} <span class="glow-text">{{ data.title_highlight | default('Breaking Out') }}</span> {{ data.title_suffix | default('Right Now') }}</div>
+    <div class="subtitle">{{ data.subtitle | default('// tracked by CrowdWiseAI momentum engine') }}</div>
+  </div>
+
+  <div class="leaderboard">
+    <div class="lb-header">
+      <span>#</span>
+      <span>{{ data.col_tool | default('Tool') }}</span>
+      <span>{{ data.col_score | default('Score') }}</span>
+      <span>{{ data.col_growth | default('Δ 7d Growth') }}</span>
+      <span>{{ data.col_signal | default('Signal') }}</span>
+    </div>
+
+    {% for row in data.rows %}
+    <div class="lb-row {% if loop.first %}top-row{% endif %}">
+      <span class="rank">{{ '%02d' | format(loop.index) }}</span>
+      <span class="repo-name">{{ row.name }}</span>
+      <span class="stars">{{ row.score }}</span>
+      <div class="momentum-badge">
+        <span class="momentum-arrow">▲</span>
+        <span class="momentum-val">{{ row.growth }}</span>
+      </div>
+      <span class="signal-text" style="color: {% if row.signal|lower == 'hot' %}{{ design.colors.teal }}{% elif row.signal|lower == 'rising' %}{{ design.colors.cyan }}{% else %}{{ design.colors.cyan_muted }}{% endif %}">
+        {% if row.signal|lower == 'hot' %}🔥 HOT{% elif row.signal|lower == 'rising' %}↑ RISING{% else %}● WATCH{% endif %}
+      </span>
+      <div class="momentum-bar" style="width: {{ row.bar_pct | default(50) }}%;"></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

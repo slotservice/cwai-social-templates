@@ -1,0 +1,30 @@
+{
+  "logo_path": "",
+  "brand": "CrowdWiseAI",
+  "tag": "Head to Head",
+  "subtitle": "// momentum comparison by CrowdWiseAI",
+  "tool_a": {
+    "name": "Ollama",
+    "icon": "🦙",
+    "stats": [
+      { "label": "Stars", "value": "128.4k" },
+      { "label": "7d Growth", "value": "+4,210" },
+      { "label": "Contributors", "value": "520+" },
+      { "label": "Signal", "value": "🔥 HOT" }
+    ]
+  },
+  "tool_b": {
+    "name": "LM Studio",
+    "icon": "🧪",
+    "stats": [
+      { "label": "Stars", "value": "42.1k" },
+      { "label": "7d Growth", "value": "+1,890" },
+      { "label": "Contributors", "value": "85" },
+      { "label": "Signal", "value": "↑ RISING" }
+    ]
+  },
+  "winner": "a",
+  "verdict": "Ollama leads in <strong>momentum</strong> and community size — but LM Studio is catching up fast in desktop adoption.",
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

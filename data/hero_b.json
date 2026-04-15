@@ -1,0 +1,20 @@
+{
+  "logo_path": "",
+  "tagline_top": "AI Ecosystem Intelligence",
+  "title_prefix": "Discover",
+  "title_highlight": "Breakout AI Tools",
+  "title_suffix": "Before Everyone Else",
+  "subtitle": "Real-time momentum tracking across GitHub, Reddit, Hacker News, and more.",
+  "features": [
+    "Real-time repo tracking across 2,400+ tools",
+    "Momentum scoring with 7-day trend analysis",
+    "Cross-platform signal aggregation",
+    "Weekly breakout reports delivered to your inbox"
+  ],
+  "metrics": [
+    { "label": "Accuracy", "value": "94%" },
+    { "label": "Updates", "value": "Real-time" }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

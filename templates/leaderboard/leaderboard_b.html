@@ -1,0 +1,179 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Leaderboard B — compact card-based layout */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .headline-area {
+    padding: 22px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .headline {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}30{% else %}34{% endif %}px;
+    line-height: 1.1;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.text_muted }};
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 24px 44px;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+  }
+
+  .rank-card {
+    background: rgba(0,210,200,0.03);
+    border: 1px solid rgba(0,210,200,0.08);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rank-card:first-child {
+    background: rgba(0,210,200,0.06);
+    border-color: rgba(0,210,200,0.18);
+    box-shadow: 0 0 25px rgba(0,210,200,0.06);
+  }
+
+  .rank-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rank-num {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: 28px;
+    color: rgba(0,210,200,0.3);
+  }
+
+  .rank-card:first-child .rank-num {
+    color: {{ design.colors.cyan }};
+    text-shadow: 0 0 12px rgba(0,210,200,0.3);
+  }
+
+  .rank-signal {
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+
+  .rank-card-name {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 600;
+    font-size: 14px;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .rank-card-stats {
+    display: flex;
+    gap: 16px;
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+  }
+
+  .rank-card-stats .stat {
+    color: {{ design.colors.text_muted }};
+  }
+
+  .rank-card-stats .stat strong {
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .rank-card-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, {{ design.colors.cyan }}, {{ design.colors.teal }});
+    opacity: 0.5;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Weekly Breakout') }}</div>
+  </div>
+
+  <div class="headline-area">
+    <div class="headline">{{ data.title_prefix | default('Breakout') }} <span class="glow-text">{{ data.title_highlight | default('Rankings') }}</span></div>
+    <div class="subtitle">{{ data.subtitle | default('// top movers by momentum score') }}</div>
+  </div>
+
+  <div class="cards-grid">
+    {% for row in data.rows %}
+    <div class="rank-card">
+      <div class="rank-card-header">
+        <span class="rank-num">#{{ loop.index }}</span>
+        <span class="rank-signal" style="
+          {% if row.signal|lower == 'hot' %}
+            background: rgba(56,230,180,0.1); color: {{ design.colors.teal }};
+          {% elif row.signal|lower == 'rising' %}
+            background: rgba(0,210,200,0.08); color: {{ design.colors.cyan }};
+          {% else %}
+            background: rgba(0,210,200,0.05); color: {{ design.colors.cyan_muted }};
+          {% endif %}
+        ">{{ row.signal }}</span>
+      </div>
+      <div class="rank-card-name">{{ row.name }}</div>
+      <div class="rank-card-stats">
+        <span class="stat">⭐ <strong>{{ row.score }}</strong></span>
+        <span class="stat" style="color: {{ design.colors.teal }};">▲ {{ row.growth }}</span>
+      </div>
+      <div class="rank-card-bar" style="width: {{ row.bar_pct | default(50) }}%;"></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+  "badge": "New Report",
+  "title_prefix": "Weekly AI",
+  "title_highlight": "Signal Report",
+  "subtitle": "Your weekly breakdown of the fastest-moving tools, repos, and trends in the AI ecosystem.",
+  "highlights": [
+    { "icon": "📊", "text": "Top 10 surging repos" },
+    { "icon": "🔥", "text": "3 breakout tools this week" },
+    { "icon": "📈", "text": "Momentum trend analysis" },
+    { "icon": "🧠", "text": "Expert commentary" }
+  ],
+  "cta_text": "Read the Full Report →",
+  "date": "Week of April 14, 2025",
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}
