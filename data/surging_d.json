@@ -1,0 +1,19 @@
+{
+  "brand": "CrowdWiseAI",
+  "tag": "GROWTH CHART",
+  "title": "Fastest",
+  "title_highlight": "Growing",
+  "title_suffix": "This Week",
+  "subtitle": "// 7-day star growth by tool",
+  "bars": [
+    { "name": "ollama/ollama",          "growth": "+4,210", "signal": "HOT",    "bar_pct": 100 },
+    { "name": "langchain-ai/langchain", "growth": "+3,850", "signal": "HOT",    "bar_pct": 91 },
+    { "name": "openai/whisper",         "growth": "+2,430", "signal": "RISING", "bar_pct": 58 },
+    { "name": "ggerganov/llama.cpp",    "growth": "+1,980", "signal": "RISING", "bar_pct": 47 },
+    { "name": "microsoft/autogen",      "growth": "+1,540", "signal": "WATCH",  "bar_pct": 37 },
+    { "name": "huggingface/trl",        "growth": "+1,210", "signal": "WATCH",  "bar_pct": 29 },
+    { "name": "vllm-project/vllm",      "growth": "+980",  "signal": "WATCH",  "bar_pct": 23 }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

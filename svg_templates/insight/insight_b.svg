@@ -1,0 +1,65 @@
+{# ═══════════════════════════════════════════════════════
+   INSIGHT B — Data Stats Card (numbers-focused, no quote)
+
+   Dynamic elements:
+     LABEL, HEADLINE, SUBTITLE,
+     STAT_n_VALUE, STAT_n_LABEL, STAT_n_CHANGE,
+     SOURCE, FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set cx = width / 2 %}
+
+  <g id="LABEL_BADGE">
+    <rect x="{{ cx - 65 }}" y="{{ height * 0.12 }}" width="130" height="26" rx="4" fill="rgba(0,210,200,0.04)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+    <text id="LABEL" x="{{ cx }}" y="{{ height * 0.12 + 18 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.5)" letter-spacing="4">{{ data.label | default('WEEKLY DATA') }}</text>
+  </g>
+
+  <text id="HEADLINE" x="{{ cx }}" y="{{ height * 0.25 }}" text-anchor="middle" font-size="32" font-weight="800">
+    <tspan fill="#ffffff">{{ data.headline_prefix | default('AI Ecosystem') }} </tspan>
+    <tspan fill="url(#cyan-gradient)">{{ data.headline_highlight | default('By the Numbers') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ cx }}" y="{{ height * 0.31 }}" text-anchor="middle" font-size="15" font-weight="300" fill="rgba(255,255,255,0.38)">{{ data.subtitle | default('Key metrics from the past 7 days') }}</text>
+
+  {% if data.stats %}
+  {% set stat_count = data.stats | length %}
+  {% set card_w = 200 %}
+  {% set card_h = 140 %}
+  {% set card_gap = 20 %}
+  {% set total_w = stat_count * card_w + (stat_count - 1) * card_gap %}
+  {% set start_x = (width - total_w) / 2 %}
+  {% set card_y = height * 0.38 %}
+
+  <g id="stats">
+    {% for s in data.stats %}
+    {% set sx = start_x + loop.index0 * (card_w + card_gap) %}
+    {% set scx = sx + card_w / 2 %}
+
+    <g id="STAT_{{ loop.index0 }}">
+      <rect x="{{ sx }}" y="{{ card_y }}" width="{{ card_w }}" height="{{ card_h }}" rx="12" fill="rgba(0,210,200,0.04)" stroke="rgba(0,210,200,0.1)" stroke-width="1"/>
+
+      <text id="STAT_{{ loop.index0 }}_VALUE" x="{{ scx }}" y="{{ card_y + 55 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="38" font-weight="700" fill="#00d2c8">{{ s.value }}</text>
+
+      <text id="STAT_{{ loop.index0 }}_LABEL" x="{{ scx }}" y="{{ card_y + 80 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="2">{{ s.label | upper }}</text>
+
+      {% if s.change %}
+      <text id="STAT_{{ loop.index0 }}_CHANGE" x="{{ scx }}" y="{{ card_y + 110 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#38e6b4">{{ s.change }}</text>
+      {% endif %}
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+  {% if data.source %}
+  <text id="SOURCE" x="{{ cx }}" y="{{ height * 0.82 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.25)" letter-spacing="1">{{ data.source }}</text>
+  {% endif %}
+</g>
+
+</svg>

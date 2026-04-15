@@ -1,0 +1,179 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Surging F — three side-by-side tool cards */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .cards-header {
+    padding: 22px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .cards-title {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}30{% else %}36{% endif %}px;
+    color: {{ design.colors.text_primary }};
+    line-height: 1.1;
+  }
+
+  .cards-subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.text_muted }};
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  .three-cards {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    padding: 28px 44px;
+    position: relative;
+    z-index: 2;
+    align-items: stretch;
+  }
+
+  .tool-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: {% if size_key == 'ig_square' %}20px 14px{% else %}28px 18px{% endif %};
+    border-radius: 12px;
+    background: rgba(0,210,200,0.02);
+    border: 1px solid rgba(0,210,200,0.08);
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .tool-card:first-child {
+    background: rgba(0,210,200,0.06);
+    border-color: rgba(0,210,200,0.2);
+    box-shadow: 0 0 30px rgba(0,210,200,0.06);
+  }
+
+  .tc-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: rgba(0,210,200,0.06);
+    border: 1px solid rgba(0,210,200,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 24px rgba(0,210,200,0.08);
+  }
+
+  .tc-category {
+    font-family: {{ design.fonts.mono }};
+    font-size: 9px;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .tc-name {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 700;
+    font-size: {% if size_key == 'ig_square' %}17{% else %}20{% endif %}px;
+    color: {{ design.colors.text_primary }};
+    line-height: 1.2;
+  }
+
+  .tc-growth {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}28{% else %}34{% endif %}px;
+    color: {{ design.colors.cyan }};
+    text-shadow: 0 0 20px rgba(0,210,200,0.2);
+    line-height: 1;
+  }
+
+  .tc-signal {
+    padding: 4px 14px;
+    border-radius: 16px;
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .tc-signal-hot {
+    background: rgba(56,230,180,0.1);
+    border: 1px solid rgba(56,230,180,0.3);
+    color: {{ design.colors.teal }};
+  }
+  .tc-signal-rising {
+    background: rgba(0,210,200,0.08);
+    border: 1px solid rgba(0,210,200,0.25);
+    color: {{ design.colors.cyan }};
+  }
+  .tc-signal-watch {
+    background: rgba(0,210,200,0.05);
+    border: 1px solid rgba(0,210,200,0.15);
+    color: {{ design.colors.cyan_muted }};
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Surging Now') }}</div>
+  </div>
+
+  <div class="cards-header">
+    <div class="cards-title">{{ data.title | default('Top Tools') }} <span class="glow-text">{{ data.title_highlight | default('Surging') }}</span></div>
+    <div class="cards-subtitle">{{ data.subtitle | default('// tracked by CrowdWiseAI momentum engine') }}</div>
+  </div>
+
+  <div class="three-cards">
+    {% for tool in data.tools %}
+    <div class="tool-card">
+      {% if tool.icon %}
+      <div class="tc-icon">{{ tool.icon }}</div>
+      {% endif %}
+      <div class="tc-category">{{ tool.category | default('Tool') }}</div>
+      <div class="tc-name">{{ tool.name }}</div>
+      <div class="tc-growth">{{ tool.growth }}</div>
+      {% if tool.signal %}
+      <div class="tc-signal tc-signal-{{ tool.signal | lower }}">
+        {% if tool.signal | lower == 'hot' %}&#128293;{% elif tool.signal | lower == 'rising' %}&uarr;{% else %}&bull;{% endif %}
+        {{ tool.signal }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

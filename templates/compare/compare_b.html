@@ -1,0 +1,256 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Compare B — stat-by-stat horizontal bar comparison */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .compare-header {
+    padding: 22px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .compare-names {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}30{% else %}36{% endif %}px;
+    color: {{ design.colors.text_primary }};
+    line-height: 1.1;
+  }
+
+  .compare-subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.text_muted }};
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  /* --- Comparison rows --- */
+  .comp-area {
+    flex: 1;
+    padding: 24px 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+    justify-content: center;
+  }
+
+  .comp-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .comp-label {
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    color: {{ design.colors.text_muted }};
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .comp-bars {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 32px;
+  }
+
+  /* Left side (tool A) — bar grows right-to-left toward center */
+  .comp-side-a {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .comp-val-a {
+    font-family: {{ design.fonts.mono }};
+    font-size: {% if size_key == 'ig_square' %}13{% else %}15{% endif %}px;
+    font-weight: 700;
+    color: {{ design.colors.text_secondary }};
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .comp-bar-track-a {
+    flex: 1;
+    height: 24px;
+    background: rgba(0,210,200,0.04);
+    border-radius: 4px 0 0 4px;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
+    border: 1px solid rgba(0,210,200,0.06);
+    border-right: none;
+  }
+
+  .comp-bar-fill-a {
+    height: 100%;
+    background: linear-gradient(270deg, {{ design.colors.cyan }}, rgba(0,210,200,0.2));
+    border-radius: 4px 0 0 4px;
+    opacity: 0.6;
+  }
+
+  /* Center divider */
+  .comp-center {
+    width: 2px;
+    height: 32px;
+    background: rgba(0,210,200,0.2);
+    flex-shrink: 0;
+  }
+
+  /* Right side (tool B) — bar grows left-to-right from center */
+  .comp-side-b {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .comp-bar-track-b {
+    flex: 1;
+    height: 24px;
+    background: rgba(0,210,200,0.04);
+    border-radius: 0 4px 4px 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    border: 1px solid rgba(0,210,200,0.06);
+    border-left: none;
+  }
+
+  .comp-bar-fill-b {
+    height: 100%;
+    background: linear-gradient(90deg, {{ design.colors.teal }}, rgba(56,230,180,0.2));
+    border-radius: 0 4px 4px 0;
+    opacity: 0.6;
+  }
+
+  .comp-val-b {
+    font-family: {{ design.fonts.mono }};
+    font-size: {% if size_key == 'ig_square' %}13{% else %}15{% endif %}px;
+    font-weight: 700;
+    color: {{ design.colors.text_secondary }};
+    min-width: 60px;
+    text-align: left;
+  }
+
+  /* --- Name labels row --- */
+  .name-labels {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 44px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 4px;
+  }
+
+  .name-label-a, .name-label-b {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    font-weight: 700;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* --- Verdict --- */
+  .verdict-bar {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 8px 44px 10px 44px;
+  }
+
+  .verdict-text {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_muted }};
+    letter-spacing: 1px;
+  }
+
+  .verdict-text strong {
+    color: {{ design.colors.cyan }};
+    font-weight: 700;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Head to Head') }}</div>
+  </div>
+
+  <div class="compare-header">
+    <div class="compare-names">{{ data.tool_a_name }} <span class="glow-text">vs</span> {{ data.tool_b_name }}</div>
+    <div class="compare-subtitle">{{ data.subtitle | default('// stat-by-stat comparison by CrowdWiseAI') }}</div>
+  </div>
+
+  <div class="name-labels">
+    <span class="name-label-a">{{ data.tool_a_name }}</span>
+    <span class="name-label-b">{{ data.tool_b_name }}</span>
+  </div>
+
+  <div class="comp-area">
+    {% for c in data.comparisons %}
+    <div class="comp-row">
+      <div class="comp-label">{{ c.label }}</div>
+      <div class="comp-bars">
+        <div class="comp-side-a">
+          <span class="comp-val-a">{{ c.a_value }}</span>
+          <div class="comp-bar-track-a">
+            <div class="comp-bar-fill-a" style="width: {{ c.a_pct | default(50) }}%;"></div>
+          </div>
+        </div>
+        <div class="comp-center"></div>
+        <div class="comp-side-b">
+          <div class="comp-bar-track-b">
+            <div class="comp-bar-fill-b" style="width: {{ c.b_pct | default(50) }}%;"></div>
+          </div>
+          <span class="comp-val-b">{{ c.b_value }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if data.verdict %}
+  <div class="verdict-bar">
+    <div class="verdict-text">{{ data.verdict }}</div>
+  </div>
+  {% endif %}
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

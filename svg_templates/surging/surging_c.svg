@@ -1,0 +1,63 @@
+{# ═══════════════════════════════════════════════════════
+   SURGING C — Horizontal Split Card (big stat left, info right)
+
+   Dynamic elements:
+     ICON, TOOL_NAME, CATEGORY, DESCRIPTION,
+     BIG_STAT_VALUE, BIG_STAT_LABEL,
+     STAT_n_VALUE, STAT_n_LABEL, SIGNAL_BADGE,
+     FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set mid = width * 0.42 %}
+  {% set right_x = mid + 40 %}
+
+  {# --- Left side: big stat --- #}
+  <g id="left-panel">
+    <rect x="44" y="{{ height * 0.15 }}" width="{{ mid - 64 }}" height="{{ height * 0.65 }}" rx="14" fill="rgba(0,210,200,0.04)" stroke="rgba(0,210,200,0.12)" stroke-width="1"/>
+
+    <text id="ICON" x="{{ mid / 2 }}" y="{{ height * 0.32 }}" text-anchor="middle" font-size="48">{{ data.icon | default('🚀') }}</text>
+
+    <text id="BIG_STAT_VALUE" x="{{ mid / 2 }}" y="{{ height * 0.52 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="48" font-weight="700" fill="#00d2c8">{{ data.big_stat_value | default('+4,210') }}</text>
+    <text id="BIG_STAT_LABEL" x="{{ mid / 2 }}" y="{{ height * 0.60 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="3">{{ data.big_stat_label | default('7-DAY GROWTH') }}</text>
+
+    {% if data.signal %}
+    {% set badge_color = '#38e6b4' if data.signal|lower == 'hot' else ('#00d2c8' if data.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+    <g id="SIGNAL_BADGE">
+      <rect x="{{ mid/2 - 40 }}" y="{{ height * 0.66 }}" width="80" height="26" rx="13" fill="rgba(0,210,200,0.06)" stroke="{{ badge_color }}" stroke-width="1" stroke-opacity="0.3"/>
+      <text x="{{ mid/2 }}" y="{{ height * 0.66 + 18 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="{{ badge_color }}" letter-spacing="2">{{ data.signal }}</text>
+    </g>
+    {% endif %}
+  </g>
+
+  {# --- Right side: info --- #}
+  <g id="right-panel">
+    <text id="CATEGORY" x="{{ right_x }}" y="{{ height * 0.22 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.5)" letter-spacing="3">{{ data.category | default('TOOL SPOTLIGHT') }}</text>
+
+    <text id="TOOL_NAME" x="{{ right_x }}" y="{{ height * 0.33 }}" font-size="36" font-weight="800" fill="#ffffff">{{ data.tool_name | default('Ollama') }}</text>
+
+    <text id="DESCRIPTION" x="{{ right_x }}" y="{{ height * 0.42 }}" font-size="15" font-weight="300" fill="rgba(255,255,255,0.38)">{{ data.description | default('Run large language models locally.') }}</text>
+
+    {% if data.stats %}
+    {% set stat_y = height * 0.54 %}
+    <g id="stats">
+      {% for s in data.stats %}
+      {% set sy = stat_y + loop.index0 * 44 %}
+      <g id="STAT_{{ loop.index0 }}">
+        <text id="STAT_{{ loop.index0 }}_LABEL" x="{{ right_x }}" y="{{ sy }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="2">{{ s.label | upper }}</text>
+        <text id="STAT_{{ loop.index0 }}_VALUE" x="{{ right_x }}" y="{{ sy + 20 }}" font-family="JetBrains Mono, monospace" font-size="18" font-weight="700" fill="#00d2c8">{{ s.value }}</text>
+      </g>
+      {% endfor %}
+    </g>
+    {% endif %}
+  </g>
+</g>
+
+</svg>

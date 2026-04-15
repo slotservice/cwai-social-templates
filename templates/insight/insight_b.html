@@ -1,0 +1,154 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Insight B — data stats card (numbers-focused) */
+  .card {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .insight-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 880px;
+    padding: 0 50px;
+  }
+
+  .insight-label {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.cyan_muted }};
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding: 5px 16px;
+    border: 1px solid rgba(0,210,200,0.15);
+    border-radius: 4px;
+    background: rgba(0,210,200,0.04);
+  }
+
+  .insight-headline {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}30{% else %}36{% endif %}px;
+    line-height: 1.15;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: -0.5px;
+  }
+
+  .insight-subtitle {
+    font-family: {{ design.fonts.body }};
+    font-size: {% if size_key == 'ig_square' %}15{% else %}17{% endif %}px;
+    font-weight: 300;
+    color: {{ design.colors.text_muted }};
+    line-height: 1.5;
+    margin-top: 12px;
+    max-width: 580px;
+  }
+
+  .stat-cards {
+    display: flex;
+    gap: 18px;
+    margin-top: 36px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stat-card {
+    flex: 1;
+    max-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: {% if size_key == 'ig_square' %}22px 14px{% else %}28px 18px{% endif %};
+    border-radius: 12px;
+    background: rgba(0,210,200,0.03);
+    border: 1px solid rgba(0,210,200,0.1);
+  }
+
+  .sc-value {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}34{% else %}42{% endif %}px;
+    line-height: 1;
+    color: {{ design.colors.cyan }};
+    text-shadow: 0 0 24px rgba(0,210,200,0.2);
+  }
+
+  .sc-label {
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    color: {{ design.colors.text_muted }};
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .sc-change {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    font-weight: 600;
+    color: {{ design.colors.teal }};
+    margin-top: 2px;
+  }
+
+  .insight-source {
+    font-family: {{ design.fonts.mono }};
+    font-size: 11px;
+    color: {{ design.colors.text_dim }};
+    letter-spacing: 1px;
+    margin-top: 28px;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="insight-content">
+    <div class="insight-label">{{ data.label | default('Data Insight') }}</div>
+
+    <div class="insight-headline">{{ data.headline_prefix | default('') }} <span class="glow-text">{{ data.headline_highlight | default('') }}</span></div>
+
+    {% if data.subtitle %}
+    <div class="insight-subtitle">{{ data.subtitle }}</div>
+    {% endif %}
+
+    {% if data.stats %}
+    <div class="stat-cards">
+      {% for s in data.stats %}
+      <div class="stat-card">
+        <div class="sc-value">{{ s.value }}</div>
+        <div class="sc-label">{{ s.label }}</div>
+        {% if s.change %}
+        <div class="sc-change">{{ s.change }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.source %}
+    <div class="insight-source">{{ data.source }}</div>
+    {% endif %}
+  </div>
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

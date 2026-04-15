@@ -181,6 +181,125 @@ const FIELD_SCHEMAS = {
       { key: "footer_right", label: "Footer Right", type: "text" },
     ]},
   ],
+  surging_c: [
+    { group: "Tool Info", fields: [
+      { key: "icon", label: "Icon", type: "icon" },
+      { key: "category", label: "Category", type: "text" },
+      { key: "tool_name", label: "Tool Name", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "signal", label: "Signal", type: "select", options: ["HOT", "RISING", "WATCH"] },
+    ]},
+    { group: "Big Stat", fields: [
+      { key: "big_stat_value", label: "Big Stat Value", type: "text" },
+      { key: "big_stat_label", label: "Big Stat Label", type: "text" },
+    ]},
+    { group: "Stats", fields: [
+      { key: "stats", label: "Stats", type: "array_objects", subfields: ["label", "value"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  surging_d: [
+    { group: "Header", fields: [
+      { key: "brand", label: "Brand Name", type: "text" },
+      { key: "tag", label: "Tag Badge", type: "text" },
+      { key: "title", label: "Title", type: "text" },
+      { key: "title_highlight", label: "Title Highlight", type: "text" },
+      { key: "title_suffix", label: "Title Suffix", type: "text" },
+      { key: "subtitle", label: "Subtitle", type: "text" },
+    ]},
+    { group: "Growth Bars", fields: [
+      { key: "bars", label: "Bars", type: "array_objects", subfields: ["name", "growth", "signal", "bar_pct"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  surging_e: [
+    { group: "Content", fields: [
+      { key: "category", label: "Category", type: "text" },
+      { key: "tool_name", label: "Tool Name", type: "text" },
+      { key: "tagline", label: "Tagline", type: "text" },
+      { key: "growth_value", label: "Growth Value", type: "text" },
+      { key: "growth_label", label: "Growth Label", type: "text" },
+      { key: "period", label: "Period", type: "text" },
+      { key: "signal", label: "Signal", type: "select", options: ["HOT", "RISING", "WATCH"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  surging_f: [
+    { group: "Header", fields: [
+      { key: "brand", label: "Brand Name", type: "text" },
+      { key: "tag", label: "Tag Badge", type: "text" },
+      { key: "title", label: "Title", type: "text" },
+      { key: "title_highlight", label: "Title Highlight", type: "text" },
+      { key: "subtitle", label: "Subtitle", type: "text" },
+    ]},
+    { group: "Tools (3 cards)", fields: [
+      { key: "tools", label: "Tools", type: "array_objects", subfields: ["icon", "name", "category", "growth", "signal"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  leaderboard_c: [
+    { group: "Header", fields: [
+      { key: "brand", label: "Brand Name", type: "text" },
+      { key: "tag", label: "Tag Badge", type: "text" },
+      { key: "title_prefix", label: "Title Prefix", type: "text" },
+      { key: "title_highlight", label: "Title Highlight", type: "text" },
+      { key: "subtitle", label: "Subtitle", type: "text" },
+    ]},
+    { group: "Rows (top 3 = podium, rest = list)", fields: [
+      { key: "rows", label: "Ranking Rows", type: "array_objects", subfields: ["name", "score", "growth", "signal", "bar_pct"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  insight_b: [
+    { group: "Content", fields: [
+      { key: "label", label: "Label Badge", type: "text" },
+      { key: "headline_prefix", label: "Headline Prefix", type: "text" },
+      { key: "headline_highlight", label: "Headline Highlight", type: "text" },
+      { key: "subtitle", label: "Subtitle", type: "text" },
+      { key: "source", label: "Source", type: "text" },
+    ]},
+    { group: "Stats Cards", fields: [
+      { key: "stats", label: "Stats", type: "array_objects", subfields: ["value", "label", "change"] },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
+  compare_b: [
+    { group: "Header", fields: [
+      { key: "brand", label: "Brand Name", type: "text" },
+      { key: "tag", label: "Tag Badge", type: "text" },
+      { key: "tool_a_name", label: "Tool A Name", type: "text" },
+      { key: "tool_b_name", label: "Tool B Name", type: "text" },
+      { key: "subtitle", label: "Subtitle", type: "text" },
+    ]},
+    { group: "Stat Comparisons", fields: [
+      { key: "comparisons", label: "Rows", type: "array_objects", subfields: ["label", "a_value", "b_value", "a_pct", "b_pct"] },
+    ]},
+    { group: "Result", fields: [
+      { key: "verdict", label: "Verdict", type: "textarea" },
+    ]},
+    { group: "Footer", fields: [
+      { key: "footer_left", label: "Footer Left", type: "text" },
+      { key: "footer_right", label: "Footer Right", type: "text" },
+    ]},
+  ],
 };
 
 

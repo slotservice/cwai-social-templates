@@ -1,0 +1,16 @@
+{
+  "icon": "🦙",
+  "category": "Tool Spotlight",
+  "tool_name": "Ollama",
+  "description": "Run large language models locally with a simple CLI.",
+  "big_stat_value": "+4,210",
+  "big_stat_label": "7-DAY GROWTH",
+  "signal": "HOT",
+  "stats": [
+    { "label": "GitHub Stars", "value": "128.4k" },
+    { "label": "Forks", "value": "9.8k" },
+    { "label": "Contributors", "value": "520+" }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

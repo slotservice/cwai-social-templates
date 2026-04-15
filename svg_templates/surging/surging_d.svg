@@ -1,0 +1,71 @@
+{# ═══════════════════════════════════════════════════════
+   SURGING D — Growth Bar Chart (horizontal bars ranked)
+
+   Dynamic elements:
+     BRAND, TAG, TITLE, TITLE_HIGHLIGHT, SUBTITLE,
+     BAR_n_NAME, BAR_n_VALUE, BAR_n_GROWTH, BAR_n_SIGNAL,
+     FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 130 }}" y="28" width="130" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 65 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('GROWTH CHART') }}</text>
+    </g>
+  </g>
+
+  <text id="TITLE" x="{{ left }}" y="95" font-size="34" font-weight="800">
+    <tspan fill="#ffffff">{{ data.title | default('Fastest') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Growing') }}</tspan>
+    <tspan fill="#ffffff"> {{ data.title_suffix | default('This Week') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ left }}" y="115" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// 7-day star growth by tool') }}</text>
+
+  {% if data.bars %}
+  {% set bar_start_y = 145 %}
+  {% set bar_h = 38 %}
+  {% set bar_gap = 8 %}
+  {% set max_bar_w = (right - left) * 0.6 %}
+  {% set max_val = data.bars[0].bar_pct | default(100) %}
+
+  <g id="bars">
+    {% for bar in data.bars %}
+    {% set by = bar_start_y + loop.index0 * (bar_h + bar_gap) %}
+    {% set bar_w = max_bar_w * (bar.bar_pct | default(50)) / 100 %}
+    {% set signal_color = '#38e6b4' if bar.signal|lower == 'hot' else ('#00d2c8' if bar.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+
+    <g id="BAR_{{ loop.index0 }}">
+      {# Bar background #}
+      <rect x="{{ left }}" y="{{ by }}" width="{{ right - left }}" height="{{ bar_h }}" rx="6" fill="rgba(0,210,200,0.02)" stroke="rgba(0,210,200,0.06)" stroke-width="1"/>
+
+      {# Filled bar #}
+      <rect x="{{ left }}" y="{{ by }}" width="{{ bar_w }}" height="{{ bar_h }}" rx="6" fill="url(#bar-gradient)" opacity="0.15"/>
+      <rect x="{{ left }}" y="{{ by + bar_h - 3 }}" width="{{ bar_w }}" height="3" rx="1.5" fill="url(#bar-gradient)" opacity="0.6"/>
+
+      {# Name #}
+      <text id="BAR_{{ loop.index0 }}_NAME" x="{{ left + 14 }}" y="{{ by + 24 }}" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#ffffff">{{ bar.name }}</text>
+
+      {# Growth value #}
+      <text id="BAR_{{ loop.index0 }}_GROWTH" x="{{ right - 100 }}" y="{{ by + 24 }}" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#38e6b4">▲ {{ bar.growth }}</text>
+
+      {# Signal #}
+      <text id="BAR_{{ loop.index0 }}_SIGNAL" x="{{ right - 14 }}" y="{{ by + 24 }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="{{ signal_color }}">{{ bar.signal }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

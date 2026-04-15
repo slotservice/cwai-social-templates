@@ -1,0 +1,14 @@
+{
+  "label": "WEEKLY DATA",
+  "headline_prefix": "AI Ecosystem",
+  "headline_highlight": "By the Numbers",
+  "subtitle": "Key metrics from the past 7 days",
+  "stats": [
+    { "value": "2,400+", "label": "Tools Tracked", "change": "+12 new this week" },
+    { "value": "18K",    "label": "Daily Signals",  "change": "+8% vs last week" },
+    { "value": "94%",    "label": "Prediction Acc.", "change": "Stable" }
+  ],
+  "source": "CrowdWiseAI Weekly Signal Report",
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

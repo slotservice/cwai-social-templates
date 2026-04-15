@@ -1,0 +1,258 @@
+{% extends "partials/base.html" %}
+
+{% block extra_styles %}
+  /* Leaderboard C — podium style */
+  .card {
+    justify-content: flex-start;
+  }
+
+  .headline-area {
+    padding: 22px 44px 0 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .headline {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}30{% else %}36{% endif %}px;
+    line-height: 1.1;
+    color: {{ design.colors.text_primary }};
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_muted }};
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* --- Podium (top 3) --- */
+  .podium {
+    display: flex;
+    gap: 14px;
+    padding: 24px 44px 16px 44px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .podium-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: {% if size_key == 'ig_square' %}16px 10px{% else %}20px 14px{% endif %};
+    border-radius: 12px;
+    background: rgba(0,210,200,0.03);
+    border: 1px solid rgba(0,210,200,0.08);
+    text-align: center;
+  }
+
+  .podium-card:first-child {
+    background: rgba(0,210,200,0.07);
+    border-color: rgba(0,210,200,0.22);
+    box-shadow: 0 0 30px rgba(0,210,200,0.08);
+  }
+
+  .podium-rank {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 800;
+    font-size: {% if size_key == 'ig_square' %}28{% else %}34{% endif %}px;
+    line-height: 1;
+    background: linear-gradient(90deg, {{ design.colors.cyan }}, {{ design.colors.teal }});
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .podium-card:nth-child(2) .podium-rank,
+  .podium-card:nth-child(3) .podium-rank {
+    opacity: 0.6;
+  }
+
+  .podium-name {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 700;
+    font-size: {% if size_key == 'ig_square' %}14{% else %}16{% endif %}px;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .podium-score {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .podium-growth {
+    font-family: {{ design.fonts.mono }};
+    font-size: 13px;
+    font-weight: 700;
+    color: {{ design.colors.teal }};
+  }
+
+  .podium-signal {
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    border-radius: 12px;
+  }
+  .ps-hot {
+    background: rgba(56,230,180,0.1);
+    border: 1px solid rgba(56,230,180,0.3);
+    color: {{ design.colors.teal }};
+  }
+  .ps-rising {
+    background: rgba(0,210,200,0.08);
+    border: 1px solid rgba(0,210,200,0.25);
+    color: {{ design.colors.cyan }};
+  }
+  .ps-watch {
+    background: rgba(0,210,200,0.05);
+    border: 1px solid rgba(0,210,200,0.15);
+    color: {{ design.colors.cyan_muted }};
+  }
+
+  /* --- Remaining rows --- */
+  .remaining {
+    flex: 1;
+    padding: 0 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rem-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 100px 90px 80px;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: rgba(0,210,200,0.02);
+    border: 1px solid rgba(0,210,200,0.05);
+    position: relative;
+  }
+
+  .rem-rank {
+    font-family: {{ design.fonts.heading }};
+    font-weight: 700;
+    font-size: 15px;
+    color: rgba(0,210,200,0.5);
+  }
+
+  .rem-name {
+    font-family: {{ design.fonts.mono }};
+    font-weight: 600;
+    font-size: 13px;
+    color: {{ design.colors.text_primary }};
+  }
+
+  .rem-score {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.text_secondary }};
+  }
+
+  .rem-growth {
+    font-family: {{ design.fonts.mono }};
+    font-size: 12px;
+    color: {{ design.colors.teal }};
+  }
+
+  .rem-signal {
+    font-family: {{ design.fonts.mono }};
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .rem-bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, {{ design.colors.cyan }}, {{ design.colors.teal }});
+    border-radius: 0 2px 2px 0;
+    opacity: 0.3;
+  }
+{% endblock %}
+
+{% block body %}
+<div class="card">
+  <div class="grid-bg"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="scanline"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="top-bar">
+    <div class="logo-area">
+      {% if data.logo_path %}
+      <img src="{{ data.logo_path }}" alt="Logo">
+      {% else %}
+      <span class="brand-text">{{ data.brand | default('CrowdWiseAI') }}</span>
+      {% endif %}
+    </div>
+    <div class="tag">{{ data.tag | default('Leaderboard') }}</div>
+  </div>
+
+  <div class="headline-area">
+    <div class="headline">{{ data.title_prefix | default('Top Tools') }} <span class="glow-text">{{ data.title_highlight | default('This Week') }}</span></div>
+    <div class="subtitle">{{ data.subtitle | default('// tracked by CrowdWiseAI momentum engine') }}</div>
+  </div>
+
+  <!-- Podium: top 3 -->
+  <div class="podium">
+    {% for row in data.rows[:3] %}
+    <div class="podium-card">
+      <div class="podium-rank">#{{ loop.index }}</div>
+      <div class="podium-name">{{ row.name }}</div>
+      <div class="podium-score">{{ row.score }}</div>
+      <div class="podium-growth">&#9650; {{ row.growth }}</div>
+      {% if row.signal %}
+      <div class="podium-signal ps-{{ row.signal | lower }}">
+        {% if row.signal | lower == 'hot' %}&#128293;{% elif row.signal | lower == 'rising' %}&uarr;{% else %}&bull;{% endif %} {{ row.signal }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Remaining rows -->
+  {% if data.rows | length > 3 %}
+  <div class="remaining">
+    {% for row in data.rows[3:] %}
+    <div class="rem-row">
+      <span class="rem-rank">{{ '%02d' | format(loop.index + 3) }}</span>
+      <span class="rem-name">{{ row.name }}</span>
+      <span class="rem-score">{{ row.score }}</span>
+      <span class="rem-growth">&#9650; {{ row.growth }}</span>
+      <span class="rem-signal" style="color: {% if row.signal|lower == 'hot' %}{{ design.colors.teal }}{% elif row.signal|lower == 'rising' %}{{ design.colors.cyan }}{% else %}{{ design.colors.cyan_muted }}{% endif %}">
+        {% if row.signal|lower == 'hot' %}&#128293; HOT{% elif row.signal|lower == 'rising' %}&uarr; RISING{% else %}&bull; WATCH{% endif %}
+      </span>
+      <div class="rem-bar" style="width: {{ row.bar_pct | default(40) }}%;"></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="bottom-bar">
+    <div class="signal-tag">{{ data.footer_left | default('Signal from Noise') }}</div>
+    <div class="url">{{ data.footer_right | default('crowdwiseai.com') }}</div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{
+  "brand": "CrowdWiseAI",
+  "tag": "TOP MOVERS",
+  "title_prefix": "Breakout",
+  "title_highlight": "Podium",
+  "subtitle": "// top 3 + runners up",
+  "rows": [
+    { "name": "ollama/ollama",           "score": "128.4k", "growth": "+4,210", "signal": "HOT",    "bar_pct": 95 },
+    { "name": "langchain-ai/langchain",  "score": "102.7k", "growth": "+3,850", "signal": "HOT",    "bar_pct": 82 },
+    { "name": "openai/whisper",          "score": "74.2k",  "growth": "+2,430", "signal": "RISING", "bar_pct": 65 },
+    { "name": "ggerganov/llama.cpp",     "score": "71.9k",  "growth": "+1,980", "signal": "RISING", "bar_pct": 52 },
+    { "name": "microsoft/autogen",       "score": "38.6k",  "growth": "+1,540", "signal": "WATCH",  "bar_pct": 40 },
+    { "name": "huggingface/transformers","score": "142.3k", "growth": "+1,320", "signal": "WATCH",  "bar_pct": 35 }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}

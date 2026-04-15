@@ -1,0 +1,81 @@
+{# ═══════════════════════════════════════════════════════
+   COMPARE B — Stat-by-Stat Comparison (horizontal bars)
+
+   Dynamic elements:
+     BRAND, TAG, TOOL_A_NAME, TOOL_B_NAME, SUBTITLE,
+     ROW_n_LABEL, ROW_n_A_VALUE, ROW_n_B_VALUE,
+     ROW_n_A_BAR, ROW_n_B_BAR,
+     VERDICT, FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+
+  <linearGradient id="bar-a-gradient" x1="1" y1="0" x2="0" y2="0">
+    <stop offset="0%" stop-color="#00d2c8"/>
+    <stop offset="100%" stop-color="#00d2c8" stop-opacity="0.2"/>
+  </linearGradient>
+  <linearGradient id="bar-b-gradient" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#38e6b4"/>
+    <stop offset="100%" stop-color="#38e6b4" stop-opacity="0.2"/>
+  </linearGradient>
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+  {% set cx = width / 2 %}
+
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 120 }}" y="28" width="120" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 60 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('COMPARE') }}</text>
+    </g>
+  </g>
+
+  {# --- Title: names on each side --- #}
+  <text id="TOOL_A_NAME" x="{{ cx - 30 }}" y="95" text-anchor="end" font-size="34" font-weight="800" fill="#00d2c8">{{ data.tool_a_name | default('Ollama') }}</text>
+  <text x="{{ cx }}" y="95" text-anchor="middle" font-size="34" font-weight="800" fill="rgba(255,255,255,0.25)">vs</text>
+  <text id="TOOL_B_NAME" x="{{ cx + 30 }}" y="95" font-size="34" font-weight="800" fill="#38e6b4">{{ data.tool_b_name | default('LM Studio') }}</text>
+
+  <text id="SUBTITLE" x="{{ cx }}" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// stat-by-stat breakdown') }}</text>
+
+  {# --- Comparison rows --- #}
+  {% if data.comparisons %}
+  {% set row_start = 145 %}
+  {% set row_h = 52 %}
+  {% set row_gap = 8 %}
+  {% set bar_max = (cx - left - 100) %}
+
+  <g id="comparison-rows">
+    {% for row in data.comparisons %}
+    {% set ry = row_start + loop.index0 * (row_h + row_gap) %}
+    {% set a_pct = row.a_pct | default(50) %}
+    {% set b_pct = row.b_pct | default(50) %}
+
+    <g id="ROW_{{ loop.index0 }}">
+      {# Label in center #}
+      <text id="ROW_{{ loop.index0 }}_LABEL" x="{{ cx }}" y="{{ ry + 14 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">{{ row.label | upper }}</text>
+
+      {# A value + bar (right-aligned from center) #}
+      <text id="ROW_{{ loop.index0 }}_A_VALUE" x="{{ cx - 60 }}" y="{{ ry + 38 }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#00d2c8">{{ row.a_value }}</text>
+      <rect id="ROW_{{ loop.index0 }}_A_BAR" x="{{ cx - 60 - bar_max * a_pct / 100 }}" y="{{ ry + 42 }}" width="{{ bar_max * a_pct / 100 }}" height="4" rx="2" fill="url(#bar-a-gradient)"/>
+
+      {# B value + bar (left-aligned from center) #}
+      <text id="ROW_{{ loop.index0 }}_B_VALUE" x="{{ cx + 60 }}" y="{{ ry + 38 }}" font-family="JetBrains Mono, monospace" font-size="16" font-weight="700" fill="#38e6b4">{{ row.b_value }}</text>
+      <rect id="ROW_{{ loop.index0 }}_B_BAR" x="{{ cx + 60 }}" y="{{ ry + 42 }}" width="{{ bar_max * b_pct / 100 }}" height="4" rx="2" fill="url(#bar-b-gradient)"/>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+  {% if data.verdict %}
+  <text id="VERDICT" x="{{ cx }}" y="{{ height - 60 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(255,255,255,0.35)">{{ data.verdict }}</text>
+  {% endif %}
+</g>
+
+</svg>

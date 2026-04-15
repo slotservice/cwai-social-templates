@@ -1,0 +1,90 @@
+{# ═══════════════════════════════════════════════════════
+   LEADERBOARD C — Podium Style (top 3 highlighted + rest listed)
+
+   Dynamic elements:
+     BRAND, TAG, TITLE, TITLE_HIGHLIGHT, SUBTITLE,
+     PODIUM_n_RANK, PODIUM_n_NAME, PODIUM_n_SCORE,
+     PODIUM_n_GROWTH, PODIUM_n_SIGNAL,
+     LIST_n_RANK, LIST_n_NAME, LIST_n_SCORE, LIST_n_GROWTH,
+     FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+  {% set cx = width / 2 %}
+
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 110 }}" y="28" width="110" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 55 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('TOP MOVERS') }}</text>
+    </g>
+  </g>
+
+  <text id="TITLE" x="{{ cx }}" y="95" text-anchor="middle" font-size="34" font-weight="800">
+    <tspan fill="#ffffff">{{ data.title_prefix | default('Breakout') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Podium') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ cx }}" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// top 3 + runners up') }}</text>
+
+  {% if data.rows %}
+  {# --- Podium: top 3 as big cards --- #}
+  {% set podium_y = 140 %}
+  {% set podium_h = 180 %}
+  {% set podium_gap = 16 %}
+  {% set podium_w = (right - left - podium_gap * 2) / 3 %}
+
+  <g id="podium">
+    {% for row in data.rows[:3] %}
+    {% set px = left + loop.index0 * (podium_w + podium_gap) %}
+    {% set pcx = px + podium_w / 2 %}
+    {% set is_first = loop.first %}
+    {% set signal_color = '#38e6b4' if row.signal|lower == 'hot' else ('#00d2c8' if row.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+
+    <g id="PODIUM_{{ loop.index0 }}">
+      <rect x="{{ px }}" y="{{ podium_y }}" width="{{ podium_w }}" height="{{ podium_h }}" rx="12"
+        fill="{{ 'rgba(0,210,200,0.08)' if is_first else 'rgba(0,210,200,0.03)' }}"
+        stroke="{{ 'rgba(0,210,200,0.25)' if is_first else 'rgba(0,210,200,0.08)' }}" stroke-width="1"/>
+
+      <text id="PODIUM_{{ loop.index0 }}_RANK" x="{{ pcx }}" y="{{ podium_y + 38 }}" text-anchor="middle" font-size="32" font-weight="800" fill="{{ '#00d2c8' if is_first else 'rgba(0,210,200,0.3)' }}">#{{ loop.index }}</text>
+
+      <text id="PODIUM_{{ loop.index0 }}_NAME" x="{{ pcx }}" y="{{ podium_y + 70 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#ffffff">{{ row.name }}</text>
+
+      <text id="PODIUM_{{ loop.index0 }}_SCORE" x="{{ pcx }}" y="{{ podium_y + 100 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(255,255,255,0.5)">⭐ {{ row.score }}</text>
+
+      <text id="PODIUM_{{ loop.index0 }}_GROWTH" x="{{ pcx }}" y="{{ podium_y + 130 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700" fill="#00d2c8">▲ {{ row.growth }}</text>
+
+      <rect x="{{ pcx - 30 }}" y="{{ podium_y + 145 }}" width="60" height="22" rx="11" fill="rgba(0,210,200,0.06)" stroke="{{ signal_color }}" stroke-width="1" stroke-opacity="0.3"/>
+      <text id="PODIUM_{{ loop.index0 }}_SIGNAL" x="{{ pcx }}" y="{{ podium_y + 161 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="{{ signal_color }}">{{ row.signal }}</text>
+    </g>
+    {% endfor %}
+  </g>
+
+  {# --- Runner-ups: compact rows --- #}
+  {% set list_y = podium_y + podium_h + 20 %}
+  {% set list_h = 34 %}
+  {% set list_gap = 5 %}
+  <g id="runners-up">
+    {% for row in data.rows[3:] %}
+    {% set ly = list_y + loop.index0 * (list_h + list_gap) %}
+    <g id="LIST_{{ loop.index0 }}">
+      <rect x="{{ left }}" y="{{ ly }}" width="{{ right - left }}" height="{{ list_h }}" rx="6" fill="rgba(0,210,200,0.02)" stroke="rgba(0,210,200,0.06)" stroke-width="1"/>
+      <text id="LIST_{{ loop.index0 }}_RANK" x="{{ left + 24 }}" y="{{ ly + 22 }}" text-anchor="middle" font-size="14" font-weight="700" fill="rgba(0,210,200,0.4)">{{ '%02d' | format(loop.index + 3) }}</text>
+      <text id="LIST_{{ loop.index0 }}_NAME" x="{{ left + 55 }}" y="{{ ly + 22 }}" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#ffffff">{{ row.name }}</text>
+      <text id="LIST_{{ loop.index0 }}_SCORE" x="{{ right - 180 }}" y="{{ ly + 22 }}" font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(255,255,255,0.5)">{{ row.score }}</text>
+      <text id="LIST_{{ loop.index0 }}_GROWTH" x="{{ right - 14 }}" y="{{ ly + 22 }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" fill="#38e6b4">▲ {{ row.growth }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

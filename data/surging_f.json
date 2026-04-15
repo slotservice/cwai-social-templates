@@ -1,0 +1,14 @@
+{
+  "brand": "CrowdWiseAI",
+  "tag": "TOP 3 SURGING",
+  "title": "Top",
+  "title_highlight": "Surging Tools",
+  "subtitle": "// highest momentum this week",
+  "tools": [
+    { "icon": "🦙", "name": "Ollama",    "category": "LOCAL LLM",  "growth": "+4,210", "signal": "HOT" },
+    { "icon": "🔗", "name": "LangChain", "category": "FRAMEWORK",  "growth": "+3,850", "signal": "HOT" },
+    { "icon": "🎤", "name": "Whisper",   "category": "SPEECH AI",  "growth": "+2,430", "signal": "RISING" }
+  ],
+  "footer_left": "Signal from Noise",
+  "footer_right": "crowdwiseai.com"
+}
