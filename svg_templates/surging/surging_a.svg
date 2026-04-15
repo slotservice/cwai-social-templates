@@ -1,0 +1,73 @@
+{# ═══════════════════════════════════════════════════════
+   SURGING A — Single Tool Spotlight
+
+   Dynamic elements (content-dynamic):
+     ICON           — tool emoji/icon
+     CATEGORY       — category label
+     TOOL_NAME      — main tool name
+     DESCRIPTION    — tool description
+     STAT_n_VALUE   — stat number (n = 0,1,2...)
+     STAT_n_LABEL   — stat label
+     SIGNAL_BADGE   — signal status (HOT/RISING/WATCH)
+     FOOTER_LEFT / FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set cx = width / 2 %}
+  {% set font_size = 42 if width >= 1200 else (36 if width >= 1080 else 32) %}
+
+  {# --- Icon --- #}
+  <g id="ICON_WRAP">
+    <rect x="{{ cx - 40 }}" y="{{ height * 0.15 }}" width="80" height="80" rx="18" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.2)" stroke-width="1"/>
+    <text id="ICON" x="{{ cx }}" y="{{ height * 0.15 + 55 }}" text-anchor="middle" font-size="36">{{ data.icon | default('🚀') }}</text>
+  </g>
+
+  {# --- Category --- #}
+  <text id="CATEGORY" x="{{ cx }}" y="{{ height * 0.36 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.5)" letter-spacing="3" text-transform="uppercase">{{ data.category | default('Tool Spotlight') }}</text>
+
+  {# --- Tool name --- #}
+  <text id="TOOL_NAME" x="{{ cx }}" y="{{ height * 0.36 + font_size + 8 }}" text-anchor="middle" font-size="{{ font_size }}" font-weight="800" fill="#ffffff">{{ data.tool_name | default('Ollama') }}</text>
+
+  {# --- Description --- #}
+  <text id="DESCRIPTION" x="{{ cx }}" y="{{ height * 0.36 + font_size + 36 }}" text-anchor="middle" font-size="16" font-weight="300" fill="rgba(255,255,255,0.38)" letter-spacing="0.5">{{ data.description | default('Run large language models locally with a simple CLI.') }}</text>
+
+  {# --- Stats row --- #}
+  {% if data.stats %}
+  {% set stat_count = data.stats | length %}
+  {% set stat_w = 120 %}
+  {% set stat_gap = 24 %}
+  {% set total_w = stat_count * stat_w + (stat_count - 1) * stat_gap %}
+  {% set start_x = (width - total_w) / 2 %}
+  {% set stat_y = height * 0.64 %}
+
+  <g id="stats">
+    {% for s in data.stats %}
+    {% set sx = start_x + loop.index0 * (stat_w + stat_gap) + stat_w / 2 %}
+    <g id="STAT_{{ loop.index0 }}">
+      <text id="STAT_{{ loop.index0 }}_VALUE" x="{{ sx }}" y="{{ stat_y }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700" fill="#00d2c8">{{ s.value }}</text>
+      <text id="STAT_{{ loop.index0 }}_LABEL" x="{{ sx }}" y="{{ stat_y + 20 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="2" text-transform="uppercase">{{ s.label }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+  {# --- Signal badge --- #}
+  {% if data.signal %}
+  {% set badge_y = height * 0.80 %}
+  {% set badge_color = '#38e6b4' if data.signal|lower == 'hot' else ('#00d2c8' if data.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+  {% set badge_bg = 'rgba(56,230,180,0.1)' if data.signal|lower == 'hot' else ('rgba(0,210,200,0.08)' if data.signal|lower == 'rising' else 'rgba(0,210,200,0.05)') %}
+  <g id="SIGNAL_BADGE">
+    <rect x="{{ cx - 50 }}" y="{{ badge_y }}" width="100" height="28" rx="14" fill="{{ badge_bg }}" stroke="{{ badge_color }}" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="{{ cx }}" y="{{ badge_y + 19 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="{{ badge_color }}" letter-spacing="2">{{ data.signal }}</text>
+  </g>
+  {% endif %}
+</g>
+
+</svg>

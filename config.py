@@ -7,6 +7,7 @@ from pathlib import Path
 # Paths
 PROJECT_ROOT = Path(__file__).parent
 TEMPLATES_DIR = PROJECT_ROOT / "templates"
+SVG_TEMPLATES_DIR = PROJECT_ROOT / "svg_templates"
 DATA_DIR = PROJECT_ROOT / "data"
 OUTPUT_DIR = PROJECT_ROOT / "output"
 ASSETS_DIR = PROJECT_ROOT / "assets"

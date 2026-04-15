@@ -1,0 +1,22 @@
+{# ═══════════════════════════════════════════════════════
+   CWAI SVG — Static Chrome Elements
+   Group: chrome-static
+   Contains: corner brackets, bottom bar, branding
+   These NEVER change between posts.
+   ═══════════════════════════════════════════════════════ #}
+
+<g id="chrome-static">
+  <!-- Corner brackets -->
+  <g id="corners">
+    <path id="corner-tl" d="M 16 40 L 16 16 L 40 16" fill="none" stroke="rgba(0,210,200,0.18)" stroke-width="1"/>
+    <path id="corner-tr" d="M {{ width - 40 }} 16 L {{ width - 16 }} 16 L {{ width - 16 }} 40" fill="none" stroke="rgba(0,210,200,0.18)" stroke-width="1"/>
+    <path id="corner-bl" d="M 16 {{ height - 40 }} L 16 {{ height - 16 }} L 40 {{ height - 16 }}" fill="none" stroke="rgba(0,210,200,0.18)" stroke-width="1"/>
+    <path id="corner-br" d="M {{ width - 40 }} {{ height - 16 }} L {{ width - 16 }} {{ height - 16 }} L {{ width - 16 }} {{ height - 40 }}" fill="none" stroke="rgba(0,210,200,0.18)" stroke-width="1"/>
+  </g>
+
+  <!-- Bottom bar -->
+  <g id="bottom-bar">
+    <text id="FOOTER_LEFT" x="44" y="{{ height - 30 }}" font-family="Outfit, sans-serif" font-size="13" font-weight="300" fill="rgba(255,255,255,0.25)" letter-spacing="3" text-transform="uppercase">{{ data.footer_left | default('Signal from Noise') }}</text>
+    <text id="FOOTER_RIGHT" x="{{ width - 44 }}" y="{{ height - 30 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.4)" letter-spacing="1" text-anchor="end">{{ data.footer_right | default('crowdwiseai.com') }}</text>
+  </g>
+</g>

@@ -3,7 +3,8 @@
   "tagline_top": "AI Ecosystem Intelligence",
   "title_prefix": "The",
   "title_highlight": "Signal",
-  "title_suffix": "Behind Every AI Breakout",
+  "title_suffix": "Behind",
+  "title_line2": "Every AI Breakout",
   "subtitle": "Tracking momentum across 2,400+ AI tools so you never miss the next breakout.",
   "metrics": [
     { "label": "Tools Tracked", "value": "2,400+" },

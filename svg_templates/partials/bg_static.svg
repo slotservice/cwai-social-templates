@@ -1,0 +1,19 @@
+{# ═══════════════════════════════════════════════════════
+   CWAI SVG — Static Background Elements
+   Group: bg-static
+   Contains: background fill, grid, glow orbs
+   These NEVER change between posts.
+   ═══════════════════════════════════════════════════════ #}
+
+<g id="bg-static">
+  <!-- Base background -->
+  <rect id="bg-fill" width="{{ width }}" height="{{ height }}" fill="url(#bg-gradient)"/>
+
+  <!-- Grid overlay -->
+  <rect id="bg-grid" width="{{ width }}" height="{{ height }}" fill="url(#grid-pattern)" mask="url(#grid-mask)" opacity="1"/>
+
+  <!-- Glow orbs -->
+  <ellipse id="glow-center" cx="{{ width * 0.5 }}" cy="{{ height * 0.5 }}" rx="300" ry="300" fill="rgba(0,210,200,0.10)" filter="url(#glow-soft)"/>
+  <ellipse id="glow-top-right" cx="{{ width * 0.82 }}" cy="{{ height * 0.22 }}" rx="150" ry="150" fill="rgba(56,230,180,0.07)" filter="url(#glow-soft)"/>
+  <ellipse id="glow-bottom-left" cx="{{ width * 0.15 }}" cy="{{ height * 0.78 }}" rx="125" ry="125" fill="rgba(0,180,220,0.06)" filter="url(#glow-soft)"/>
+</g>

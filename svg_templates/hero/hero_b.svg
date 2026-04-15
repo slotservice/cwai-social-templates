@@ -1,0 +1,74 @@
+{# ═══════════════════════════════════════════════════════
+   HERO B — Left-Aligned Hero with Feature List
+
+   Dynamic elements (content-dynamic):
+     TAGLINE         — top label
+     TITLE_PREFIX    — headline part 1
+     TITLE_HIGHLIGHT — gradient keyword
+     TITLE_SUFFIX    — headline part 2
+     SUBTITLE        — description
+     FEATURE_n       — feature bullet (n = 0,1,2...)
+     METRIC_n_LABEL  — metric label
+     METRIC_n_VALUE  — metric value
+     FOOTER_LEFT / FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<!-- ─── Dynamic Content ─── -->
+<g id="content-dynamic">
+  {% set left = 60 %}
+  {% set font_size = 46 if width >= 1200 else (38 if width >= 1080 else 34) %}
+  {% set line_height = font_size * 1.1 %}
+
+  {# --- Tagline --- #}
+  <text id="TAGLINE" x="{{ left }}" y="{{ height * 0.22 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.5)" letter-spacing="4" text-transform="uppercase">{{ data.tagline_top | default('AI Ecosystem Intelligence') }}</text>
+
+  {# --- Headline --- #}
+  {% set title_y = height * 0.32 %}
+  <text id="TITLE_LINE1" x="{{ left }}" y="{{ title_y }}" font-size="{{ font_size }}" font-weight="800" letter-spacing="-0.5">
+    <tspan id="TITLE_PREFIX" fill="#ffffff">{{ data.title_prefix | default('Discover') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Breakout AI Tools') }}</tspan>
+  </text>
+  <text id="TITLE_LINE2" x="{{ left }}" y="{{ title_y + line_height }}" font-size="{{ font_size }}" font-weight="800" fill="#ffffff" letter-spacing="-0.5">{{ data.title_suffix | default('Before Everyone Else') }}</text>
+
+  {# --- Subtitle --- #}
+  <text id="SUBTITLE" x="{{ left }}" y="{{ title_y + line_height * 2 + 5 }}" font-size="16" font-weight="300" fill="rgba(255,255,255,0.38)" letter-spacing="0.5">{{ data.subtitle | default('Real-time momentum tracking across GitHub, Reddit, Hacker News, and more.') }}</text>
+
+  {# --- Feature list --- #}
+  {% if data.features %}
+  {% set feat_start_y = title_y + line_height * 2 + 40 %}
+  <g id="features">
+    {% for feat in data.features %}
+    {% set fy = feat_start_y + loop.index0 * 28 %}
+    <g id="FEATURE_{{ loop.index0 }}">
+      <circle cx="{{ left + 4 }}" cy="{{ fy - 4 }}" r="3" fill="#00d2c8"/>
+      <text id="FEATURE_{{ loop.index0 }}_TEXT" x="{{ left + 18 }}" y="{{ fy }}" font-family="JetBrains Mono, monospace" font-size="13" fill="rgba(255,255,255,0.6)">{{ feat }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+  {# --- Metrics --- #}
+  {% if data.metrics %}
+  {% set feat_count = data.features | length if data.features else 0 %}
+  {% set metric_y = (title_y + line_height * 2 + 40) + feat_count * 28 + 20 %}
+  <g id="metrics">
+    {% for m in data.metrics %}
+    {% set mx = left + loop.index0 * 176 %}
+    <g id="METRIC_{{ loop.index0 }}">
+      <rect x="{{ mx }}" y="{{ metric_y }}" width="160" height="36" rx="6" fill="rgba(0,210,200,0.04)" stroke="rgba(0,210,200,0.12)" stroke-width="1"/>
+      <text id="METRIC_{{ loop.index0 }}_LABEL" x="{{ mx + 16 }}" y="{{ metric_y + 23 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ m.label }}</text>
+      <text id="METRIC_{{ loop.index0 }}_VALUE" x="{{ mx + 144 }}" y="{{ metric_y + 23 }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#00d2c8">{{ m.value }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

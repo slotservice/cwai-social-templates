@@ -1,0 +1,78 @@
+{# ═══════════════════════════════════════════════════════
+   LEADERBOARD B — Card Grid Layout
+
+   Dynamic elements: BRAND, TAG, TITLE_PREFIX, TITLE_HIGHLIGHT,
+     SUBTITLE, CARD_n_RANK, CARD_n_NAME, CARD_n_SCORE,
+     CARD_n_GROWTH, CARD_n_SIGNAL, FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+
+  {# --- Top bar --- #}
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 140 }}" y="28" width="140" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 70 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('WEEKLY BREAKOUT') }}</text>
+    </g>
+  </g>
+
+  {# --- Headline --- #}
+  {% set hl_y = 95 %}
+  <text id="TITLE" x="{{ left }}" y="{{ hl_y }}" font-size="34" font-weight="800">
+    <tspan id="TITLE_PREFIX" fill="#ffffff">{{ data.title_prefix | default('Breakout') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Rankings') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ left }}" y="{{ hl_y + 20 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// top movers by momentum score') }}</text>
+
+  {# --- Card grid (2 columns) --- #}
+  {% if data.rows %}
+  {% set grid_y = hl_y + 48 %}
+  {% set card_w = (right - left - 12) / 2 %}
+  {% set card_h = 90 %}
+  {% set gap = 12 %}
+
+  <g id="cards">
+    {% for row in data.rows %}
+    {% set col = loop.index0 % 2 %}
+    {% set row_idx = loop.index0 // 2 %}
+    {% set cx = left + col * (card_w + gap) %}
+    {% set cy = grid_y + row_idx * (card_h + gap) %}
+    {% set is_first = loop.first %}
+    {% set signal_color = '#38e6b4' if row.signal|lower == 'hot' else ('#00d2c8' if row.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+
+    <g id="CARD_{{ loop.index0 }}">
+      <rect x="{{ cx }}" y="{{ cy }}" width="{{ card_w }}" height="{{ card_h }}" rx="10"
+        fill="{{ 'rgba(0,210,200,0.06)' if is_first else 'rgba(0,210,200,0.03)' }}"
+        stroke="{{ 'rgba(0,210,200,0.18)' if is_first else 'rgba(0,210,200,0.08)' }}" stroke-width="1"/>
+
+      {# Bar at bottom #}
+      <rect id="CARD_{{ loop.index0 }}_BAR" x="{{ cx }}" y="{{ cy + card_h - 3 }}" width="{{ card_w * (row.bar_pct | default(50)) / 100 }}" height="3" rx="1.5" fill="url(#bar-gradient)" opacity="0.5"/>
+
+      <text id="CARD_{{ loop.index0 }}_RANK" x="{{ cx + 16 }}" y="{{ cy + 30 }}" font-size="28" font-weight="800" fill="{{ '#00d2c8' if is_first else 'rgba(0,210,200,0.3)' }}">#{{ loop.index }}</text>
+
+      {# Signal badge #}
+      <rect x="{{ cx + card_w - 70 }}" y="{{ cy + 12 }}" width="56" height="20" rx="10"
+        fill="{{ 'rgba(56,230,180,0.1)' if row.signal|lower == 'hot' else ('rgba(0,210,200,0.08)' if row.signal|lower == 'rising' else 'rgba(0,210,200,0.05)') }}"/>
+      <text id="CARD_{{ loop.index0 }}_SIGNAL" x="{{ cx + card_w - 42 }}" y="{{ cy + 26 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="{{ signal_color }}">{{ row.signal | upper }}</text>
+
+      <text id="CARD_{{ loop.index0 }}_NAME" x="{{ cx + 16 }}" y="{{ cy + 52 }}" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600" fill="#ffffff">{{ row.name }}</text>
+
+      <text x="{{ cx + 16 }}" y="{{ cy + 72 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)">⭐ <tspan id="CARD_{{ loop.index0 }}_SCORE" fill="rgba(255,255,255,0.6)">{{ row.score }}</tspan></text>
+      <text id="CARD_{{ loop.index0 }}_GROWTH" x="{{ cx + 120 }}" y="{{ cy + 72 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="#38e6b4">▲ {{ row.growth }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

@@ -1,0 +1,94 @@
+{# ═══════════════════════════════════════════════════════
+   LEADERBOARD A — Table-Style Breakout Ranking
+
+   Dynamic elements (content-dynamic):
+     BRAND / TAG
+     TITLE_PREFIX / TITLE_HIGHLIGHT / TITLE_SUFFIX
+     SUBTITLE
+     COL_TOOL / COL_SCORE / COL_GROWTH / COL_SIGNAL
+     ROW_n_RANK / ROW_n_NAME / ROW_n_SCORE
+     ROW_n_GROWTH / ROW_n_SIGNAL / ROW_n_BAR
+     FOOTER_LEFT / FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+  {% set table_w = right - left %}
+
+  {# --- Top bar --- #}
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 110 }}" y="28" width="110" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 55 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('LIVE SIGNAL') }}</text>
+    </g>
+  </g>
+
+  {# --- Headline --- #}
+  {% set hl_y = 95 %}
+  {% set font_size = 38 if width >= 1200 else 32 %}
+  <text id="TITLE" x="{{ left }}" y="{{ hl_y }}" font-size="{{ font_size }}" font-weight="800">
+    <tspan id="TITLE_PREFIX" fill="#ffffff">{{ data.title_prefix | default('Top AI Repos') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Breaking Out') }}</tspan>
+    <tspan id="TITLE_SUFFIX" fill="#ffffff"> {{ data.title_suffix | default('Right Now') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ left }}" y="{{ hl_y + 22 }}" font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// tracked by CrowdWiseAI momentum engine') }}</text>
+
+  {# --- Column headers --- #}
+  {% set col_y = hl_y + 52 %}
+  {% set col_rank_x = left + 16 %}
+  {% set col_name_x = left + 60 %}
+  {% set col_score_x = right - 320 %}
+  {% set col_growth_x = right - 190 %}
+  {% set col_signal_x = right - 60 %}
+
+  <g id="table-header">
+    <line x1="{{ left }}" y1="{{ col_y + 8 }}" x2="{{ right }}" y2="{{ col_y + 8 }}" stroke="rgba(0,210,200,0.1)" stroke-width="1"/>
+    <text id="COL_RANK" x="{{ col_rank_x }}" y="{{ col_y }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">#</text>
+    <text id="COL_TOOL" x="{{ col_name_x }}" y="{{ col_y }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">{{ data.col_tool | default('TOOL') }}</text>
+    <text id="COL_SCORE" x="{{ col_score_x }}" y="{{ col_y }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">{{ data.col_score | default('STARS') }}</text>
+    <text id="COL_GROWTH" x="{{ col_growth_x }}" y="{{ col_y }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">{{ data.col_growth | default('Δ 7D GROWTH') }}</text>
+    <text id="COL_SIGNAL" x="{{ col_signal_x }}" y="{{ col_y }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(0,210,200,0.45)" letter-spacing="2">{{ data.col_signal | default('SIGNAL') }}</text>
+  </g>
+
+  {# --- Rows --- #}
+  {% if data.rows %}
+  {% set row_start = col_y + 20 %}
+  {% set row_h = 42 %}
+  {% set row_gap = 6 %}
+
+  <g id="rows">
+    {% for row in data.rows %}
+    {% set ry = row_start + loop.index0 * (row_h + row_gap) %}
+    {% set is_first = loop.first %}
+    {% set signal_color = '#38e6b4' if row.signal|lower == 'hot' else ('#00d2c8' if row.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+    {% set signal_prefix = '🔥 ' if row.signal|lower == 'hot' else ('↑ ' if row.signal|lower == 'rising' else '● ') %}
+
+    <g id="ROW_{{ loop.index0 }}">
+      <rect x="{{ left }}" y="{{ ry }}" width="{{ table_w }}" height="{{ row_h }}" rx="8"
+        fill="{{ 'rgba(0,210,200,0.06)' if is_first else 'rgba(0,210,200,0.02)' }}"
+        stroke="{{ 'rgba(0,210,200,0.15)' if is_first else 'rgba(0,210,200,0.06)' }}" stroke-width="1"/>
+
+      {# Momentum bar #}
+      <rect id="ROW_{{ loop.index0 }}_BAR" x="{{ left }}" y="{{ ry + row_h - 2 }}" width="{{ table_w * (row.bar_pct | default(50)) / 100 }}" height="2" rx="1" fill="url(#bar-gradient)" opacity="0.4"/>
+
+      <text id="ROW_{{ loop.index0 }}_RANK" x="{{ col_rank_x }}" y="{{ ry + 27 }}" font-size="18" font-weight="700" fill="{{ '#00d2c8' if is_first else 'rgba(0,210,200,0.6)' }}">{{ '%02d' | format(loop.index) }}</text>
+      <text id="ROW_{{ loop.index0 }}_NAME" x="{{ col_name_x }}" y="{{ ry + 27 }}" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600" fill="#ffffff">{{ row.name }}</text>
+      <text id="ROW_{{ loop.index0 }}_SCORE" x="{{ col_score_x }}" y="{{ ry + 27 }}" font-family="JetBrains Mono, monospace" font-size="13" fill="rgba(255,255,255,0.6)">{{ row.score }}</text>
+      <text id="ROW_{{ loop.index0 }}_GROWTH" x="{{ col_growth_x }}" y="{{ ry + 27 }}" font-family="JetBrains Mono, monospace" font-size="13" fill="#38e6b4">▲ {{ row.growth }}</text>
+      <text id="ROW_{{ loop.index0 }}_SIGNAL" x="{{ col_signal_x }}" y="{{ ry + 27 }}" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="{{ signal_color }}">{{ signal_prefix }}{{ row.signal | upper }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

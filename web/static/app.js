@@ -296,8 +296,10 @@ function selectTemplate(tpl) {
   const activeBtn = document.querySelector(`.template-btn[data-name="${tpl.name}"]`);
   if (activeBtn) activeBtn.classList.add("active");
 
-  // Enable export
-  document.getElementById("btnExport").disabled = false;
+  // Enable export buttons
+  document.getElementById("btnExportBoth").disabled = false;
+  document.getElementById("btnExportPng").disabled = false;
+  document.getElementById("btnExportSvg").disabled = false;
 
   renderEditFields();
   refreshPreview();
@@ -693,7 +695,7 @@ async function refreshPreview() {
   loading.style.display = "flex";
 
   try {
-    const res = await fetch("/api/preview", {
+    const res = await fetch("/api/svg-preview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -788,6 +790,139 @@ async function exportPng() {
     setStatus("Export failed");
     showToast("error", "Export failed", "Check that the server is running and try again.");
     console.error("Export error:", err);
+    btn.innerHTML = btnOriginalHTML;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+
+/* ═══════════════════════════════
+   EXPORT SVG
+   ═══════════════════════════════ */
+async function exportSvg() {
+  if (!selectedTemplate) return;
+
+  const btn = document.getElementById("btnExportSvg");
+  btn.disabled = true;
+  btn.textContent = "Exporting...";
+  setStatus("Exporting SVG...");
+
+  try {
+    const res = await fetch("/api/export-svg", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        template: selectedTemplate.name,
+        data: currentData,
+        size: selectedSize,
+      }),
+    });
+
+    if (!res.ok) throw new Error("SVG export failed");
+
+    const savedPath = res.headers.get("X-Saved-Path") || "";
+    const fileName = `${selectedTemplate.name}_${selectedSize}.svg`;
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setStatus("Exported ✓");
+    showToast("success", `Exported: ${fileName}`, savedPath ? `Saved to: ${savedPath}` : "");
+    setTimeout(() => setStatus("Ready"), 2500);
+  } catch (err) {
+    setStatus("Export failed");
+    showToast("error", "SVG export failed", err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "SVG only";
+  }
+}
+
+
+/* ═══════════════════════════════
+   EXPORT BOTH (PNG + SVG)
+   ═══════════════════════════════ */
+async function exportBoth() {
+  if (!selectedTemplate) return;
+
+  const btn = document.getElementById("btnExportBoth");
+  const btnOriginalHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="export-spinner"></span> Rendering...`;
+  setStatus("Exporting PNG + SVG...");
+
+  try {
+    const res = await fetch("/api/export-both", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        template: selectedTemplate.name,
+        data: currentData,
+        size: selectedSize,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Export failed");
+
+    const pngPath = res.headers.get("X-Saved-Path") || "";
+    const svgPath = res.headers.get("X-SVG-Path") || "";
+    const fileName = `${selectedTemplate.name}_${selectedSize}.png`;
+
+    // Download PNG
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Also download SVG
+    const svgRes = await fetch("/api/export-svg", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        template: selectedTemplate.name,
+        data: currentData,
+        size: selectedSize,
+      }),
+    });
+    if (svgRes.ok) {
+      const svgBlob = await svgRes.blob();
+      const svgUrl = URL.createObjectURL(svgBlob);
+      const svgA = document.createElement("a");
+      svgA.href = svgUrl;
+      svgA.download = `${selectedTemplate.name}_${selectedSize}.svg`;
+      document.body.appendChild(svgA);
+      svgA.click();
+      document.body.removeChild(svgA);
+      URL.revokeObjectURL(svgUrl);
+    }
+
+    setStatus("Exported ✓");
+    let msg = "";
+    if (pngPath) msg += `PNG: ${pngPath}`;
+    if (svgPath) msg += `${msg ? "\n" : ""}SVG: ${svgPath}`;
+    showToast("success", "Exported PNG + SVG", msg);
+
+    btn.innerHTML = `<span class="btn-icon">✓</span> Exported!`;
+    setTimeout(() => {
+      btn.innerHTML = btnOriginalHTML;
+      setStatus("Ready");
+    }, 3000);
+  } catch (err) {
+    setStatus("Export failed");
+    showToast("error", "Export failed", err.message);
     btn.innerHTML = btnOriginalHTML;
   } finally {
     btn.disabled = false;

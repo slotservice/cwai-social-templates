@@ -186,6 +186,70 @@ python app.py
 
 ---
 
+## Phase 6: SVG Template System (Automation-Ready)
+
+### Why — Client pivot
+Client confirmed they're building toward **automated programmatic content generation at scale**.
+They want clean SVG files with labeled dynamic elements — not HTML.
+PNG for posting, SVG for editing in Figma and future automation.
+
+### SVG Template Architecture
+
+**Layer structure** (every SVG template):
+```
+<svg>
+  <defs>         — shared gradients, filters, patterns, masks
+  <g id="bg-static">        — background fill, grid, glow orbs (NEVER changes)
+  <g id="decor-static">     — pulse rings, particles, signal lines (template-specific static)
+  <g id="chrome-static">    — corner brackets, footer bar, branding
+  <g id="content-dynamic">  — ALL editable data fields with clear IDs
+```
+
+**Dynamic element naming convention:**
+- `TITLE`, `TITLE_PREFIX`, `TITLE_HIGHLIGHT`, `TITLE_SUFFIX`
+- `SUBTITLE`, `TAGLINE`, `DESCRIPTION`
+- `METRIC_0_LABEL`, `METRIC_0_VALUE`, `METRIC_1_LABEL`, etc.
+- `TOOL_0_NAME`, `TOOL_0_GROWTH`, `TOOL_0_SIGNAL`, etc.
+- `ROW_0_RANK`, `ROW_0_NAME`, `ROW_0_SCORE`, etc.
+- `STAT_0_VALUE`, `STAT_0_LABEL`, etc.
+- `FOOTER_LEFT`, `FOOTER_RIGHT`
+
+**Text behavior:**
+- All text as `<text>` elements (editable, not outlines)
+- Fixed font sizes per template (no auto-resize)
+- Consistent font families: Outfit for headings, JetBrains Mono for data
+- Predictable positioning using absolute coordinates
+
+### Files created
+| Directory | Files | Purpose |
+|-----------|-------|---------|
+| `svg_templates/partials/` | `base_defs.svg`, `bg_static.svg`, `chrome_static.svg` | Shared SVG definitions, backgrounds, chrome |
+| `svg_templates/hero/` | `hero_a.svg`, `hero_b.svg` | Hero templates |
+| `svg_templates/surging/` | `surging_a.svg`, `surging_b.svg` | Tool spotlight templates |
+| `svg_templates/leaderboard/` | `leaderboard_a.svg`, `leaderboard_b.svg` | Ranking templates |
+| `svg_templates/insight/` | `insight_a.svg` | Quote/data card |
+| `svg_templates/compare/` | `compare_a.svg` | Versus comparison |
+| `svg_templates/newsletter/` | `newsletter_a.svg` | Report promo |
+
+### Backend updates
+- `config.py` — added `SVG_TEMPLATES_DIR`
+- `app.py` — added SVG Jinja2 environment, routes:
+  - `POST /api/svg-preview` — render SVG for live preview
+  - `POST /api/export-svg` — download SVG file
+  - `POST /api/export-both` — download PNG + SVG simultaneously
+
+### UI updates
+- Export section now has 3 options: "Export PNG + SVG" (primary), "PNG only", "SVG only"
+- Preview now uses SVG rendering instead of HTML
+- Toast shows both PNG and SVG save paths
+
+### Testing
+- All 9 templates: HTTP 200, valid SVG output ✅
+- SVG preview in iframe works ✅
+- SVG export downloads correctly ✅
+
+---
+
 ## What's left for future phases
 
 1. **Add client logo** — Place the actual CrowdWiseAI logo SVG/PNG in `assets/` and update `logo_path` in JSON files

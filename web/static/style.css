@@ -360,6 +360,27 @@ body {
 
 .btn-icon { font-size: 13px; }
 
+.btn-secondary {
+  background: var(--glow-mid);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 8px 12px;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--glow-strong);
+  border-color: var(--border-hover);
+  color: var(--cyan);
+}
+
+.export-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 /* ═══════════════════════════════
    PREVIEW AREA (Center)
    ═══════════════════════════════ */

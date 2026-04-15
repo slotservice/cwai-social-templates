@@ -1,0 +1,86 @@
+{# ═══════════════════════════════════════════════════════
+   SURGING B — Multi-Tool Ranked List
+
+   Dynamic elements (content-dynamic):
+     BRAND         — brand name in top bar
+     TAG           — tag badge text
+     TITLE / TITLE_HIGHLIGHT / TITLE_SUFFIX
+     SUBTITLE      — sub-headline
+     TOOL_n_RANK   — rank number (n = 0,1,2...)
+     TOOL_n_NAME   — tool name
+     TOOL_n_DESC   — tool description
+     TOOL_n_GROWTH — growth value
+     TOOL_n_SIGNAL — signal label
+     FOOTER_LEFT / FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+
+  {# --- Top bar --- #}
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 120 }}" y="28" width="120" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 60 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('SURGING NOW') }}</text>
+    </g>
+  </g>
+
+  {# --- Headline --- #}
+  {% set hl_y = 95 %}
+  {% set font_size = 36 if width >= 1200 else 30 %}
+  <text id="TITLE" x="{{ left }}" y="{{ hl_y }}" font-size="{{ font_size }}" font-weight="800" letter-spacing="-0.5">
+    <tspan id="TITLE_TEXT" fill="#ffffff">{{ data.title | default('Tools') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Surging') }}</tspan>
+    <tspan id="TITLE_SUFFIX" fill="#ffffff"> {{ data.title_suffix | default('This Week') }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ left }}" y="{{ hl_y + 22 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// tracked by CrowdWiseAI momentum engine') }}</text>
+
+  {# --- Tool rows --- #}
+  {% if data.tools %}
+  {% set row_start_y = hl_y + 55 %}
+  {% set row_h = 48 %}
+  {% set row_gap = 6 %}
+
+  <g id="tools">
+    {% for tool in data.tools %}
+    {% set ry = row_start_y + loop.index0 * (row_h + row_gap) %}
+    {% set is_first = loop.first %}
+    {% set signal_color = '#38e6b4' if tool.signal|lower == 'hot' else ('#00d2c8' if tool.signal|lower == 'rising' else 'rgba(0,210,200,0.6)') %}
+
+    <g id="TOOL_{{ loop.index0 }}">
+      {# Row background #}
+      <rect x="{{ left }}" y="{{ ry }}" width="{{ right - left }}" height="{{ row_h }}" rx="8"
+        fill="{{ 'rgba(0,210,200,0.06)' if is_first else 'rgba(0,210,200,0.02)' }}"
+        stroke="{{ 'rgba(0,210,200,0.15)' if is_first else 'rgba(0,210,200,0.06)' }}" stroke-width="1"/>
+
+      {# Rank #}
+      <text id="TOOL_{{ loop.index0 }}_RANK" x="{{ left + 28 }}" y="{{ ry + 31 }}" text-anchor="middle" font-size="20" font-weight="700"
+        fill="{{ '#00d2c8' if is_first else 'rgba(0,210,200,0.5)' }}">{{ '%02d' | format(loop.index) }}</text>
+
+      {# Name + description #}
+      <text id="TOOL_{{ loop.index0 }}_NAME" x="{{ left + 60 }}" y="{{ ry + 25 }}" font-family="JetBrains Mono, monospace" font-size="15" font-weight="600" fill="#ffffff">{{ tool.name }}</text>
+      {% if tool.description %}
+      <text id="TOOL_{{ loop.index0 }}_DESC" x="{{ left + 60 }}" y="{{ ry + 40 }}" font-size="12" fill="rgba(255,255,255,0.35)">{{ tool.description }}</text>
+      {% endif %}
+
+      {# Growth #}
+      <text id="TOOL_{{ loop.index0 }}_GROWTH" x="{{ right - 120 }}" y="{{ ry + 30 }}" font-family="JetBrains Mono, monospace" font-size="13" fill="#38e6b4">▲ {{ tool.growth }}</text>
+
+      {# Signal #}
+      <text id="TOOL_{{ loop.index0 }}_SIGNAL" x="{{ right - 16 }}" y="{{ ry + 30 }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="{{ signal_color }}">{{ tool.signal }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+</g>
+
+</svg>

@@ -1,0 +1,73 @@
+{# ═══════════════════════════════════════════════════════
+   NEWSLETTER A — Report / Newsletter Promo Card
+
+   Dynamic elements: BADGE, TITLE_PREFIX, TITLE_HIGHLIGHT,
+     SUBTITLE, HIGHLIGHT_n_ICON, HIGHLIGHT_n_TEXT,
+     CTA_TEXT, DATE, FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set cx = width / 2 %}
+  {% set font_size = 40 if width >= 1200 else 34 %}
+
+  {# --- Badge --- #}
+  <g id="BADGE_WRAP">
+    <rect x="{{ cx - 55 }}" y="{{ height * 0.17 }}" width="110" height="28" rx="14" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.25)" stroke-width="1"/>
+    <text id="BADGE" x="{{ cx }}" y="{{ height * 0.17 + 19 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#00d2c8" letter-spacing="3">{{ data.badge | default('NEW REPORT') }}</text>
+  </g>
+
+  {# --- Title --- #}
+  {% set title_y = height * 0.32 %}
+  <text id="TITLE" x="{{ cx }}" y="{{ title_y }}" text-anchor="middle" font-size="{{ font_size }}" font-weight="800">
+    <tspan id="TITLE_PREFIX" fill="#ffffff">{{ data.title_prefix | default('Weekly AI') }} </tspan>
+    <tspan id="TITLE_HIGHLIGHT" fill="url(#cyan-gradient)">{{ data.title_highlight | default('Signal Report') }}</tspan>
+  </text>
+
+  {# --- Subtitle --- #}
+  <text id="SUBTITLE" x="{{ cx }}" y="{{ title_y + 30 }}" text-anchor="middle" font-size="17" font-weight="300" fill="rgba(255,255,255,0.38)">{{ data.subtitle | default('Your weekly breakdown of the fastest-moving tools, repos, and trends.') }}</text>
+
+  {# --- Highlights row --- #}
+  {% if data.highlights %}
+  {% set hl_count = data.highlights | length %}
+  {% set hl_w = 180 %}
+  {% set hl_gap = 16 %}
+  {% set total_hl_w = hl_count * hl_w + (hl_count - 1) * hl_gap %}
+  {% set hl_start_x = (width - total_hl_w) / 2 %}
+  {% set hl_y = title_y + 60 %}
+
+  <g id="highlights">
+    {% for h in data.highlights %}
+    {% set hx = hl_start_x + loop.index0 * (hl_w + hl_gap) %}
+    <g id="HIGHLIGHT_{{ loop.index0 }}">
+      <rect x="{{ hx }}" y="{{ hl_y }}" width="{{ hl_w }}" height="40" rx="8" fill="rgba(0,210,200,0.04)" stroke="rgba(0,210,200,0.1)" stroke-width="1"/>
+      <text id="HIGHLIGHT_{{ loop.index0 }}_ICON" x="{{ hx + 16 }}" y="{{ hl_y + 27 }}" font-size="16">{{ h.icon }}</text>
+      <text id="HIGHLIGHT_{{ loop.index0 }}_TEXT" x="{{ hx + 40 }}" y="{{ hl_y + 26 }}" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.6)">{{ h.text }}</text>
+    </g>
+    {% endfor %}
+  </g>
+  {% endif %}
+
+  {# --- CTA button --- #}
+  {% if data.cta_text %}
+  {% set cta_y = height * 0.72 %}
+  {% set cta_w = 220 %}
+  <g id="CTA">
+    <rect x="{{ cx - cta_w/2 }}" y="{{ cta_y }}" width="{{ cta_w }}" height="44" rx="8" fill="url(#cta-gradient)"/>
+    <text id="CTA_TEXT" x="{{ cx }}" y="{{ cta_y + 29 }}" text-anchor="middle" font-size="15" font-weight="700" fill="#070a14" letter-spacing="0.5">{{ data.cta_text }}</text>
+  </g>
+  {% endif %}
+
+  {# --- Date --- #}
+  {% if data.date %}
+  <text id="DATE" x="{{ cx }}" y="{{ height * 0.82 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.date }}</text>
+  {% endif %}
+</g>
+
+</svg>

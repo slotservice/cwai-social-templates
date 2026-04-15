@@ -1,0 +1,107 @@
+{# ═══════════════════════════════════════════════════════
+   COMPARE A — Versus Comparison Card
+
+   Dynamic elements: BRAND, TAG, SUBTITLE,
+     TOOL_A_NAME, TOOL_A_ICON, TOOL_A_STAT_n_LABEL/VALUE,
+     TOOL_B_NAME, TOOL_B_ICON, TOOL_B_STAT_n_LABEL/VALUE,
+     VS_BADGE, VERDICT, FOOTER_LEFT, FOOTER_RIGHT
+   ═══════════════════════════════════════════════════════ #}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {{ width }} {{ height }}" width="{{ width }}" height="{{ height }}" font-family="Outfit, sans-serif">
+<defs>
+  {% include "partials/base_defs.svg" %}
+</defs>
+
+{% include "partials/bg_static.svg" %}
+{% include "partials/chrome_static.svg" %}
+
+<g id="content-dynamic">
+  {% set left = 44 %}
+  {% set right = width - 44 %}
+  {% set cx = width / 2 %}
+
+  {# --- Top bar --- #}
+  <g id="top-bar">
+    <text id="BRAND" x="{{ left }}" y="48" font-size="18" font-weight="700" fill="#ffffff">{{ data.brand | default('CrowdWiseAI') }}</text>
+    <g id="TAG">
+      <rect x="{{ right - 120 }}" y="28" width="120" height="28" rx="4" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+      <text x="{{ right - 60 }}" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(0,210,200,0.7)" letter-spacing="2">{{ data.tag | default('HEAD TO HEAD') }}</text>
+    </g>
+  </g>
+
+  {# --- Title --- #}
+  <text id="TITLE" x="{{ cx }}" y="95" text-anchor="middle" font-size="38" font-weight="800">
+    <tspan fill="#ffffff">{{ data.tool_a.name }} </tspan>
+    <tspan fill="url(#cyan-gradient)">vs</tspan>
+    <tspan fill="#ffffff"> {{ data.tool_b.name }}</tspan>
+  </text>
+  <text id="SUBTITLE" x="{{ cx }}" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.subtitle | default('// momentum comparison by CrowdWiseAI') }}</text>
+
+  {# --- VS area --- #}
+  {% set card_w = (width - 140) / 2 %}
+  {% set card_x_a = left + 10 %}
+  {% set card_x_b = cx + 30 %}
+  {% set card_y = 140 %}
+  {% set card_h = height - 240 %}
+  {% set winner = data.winner | default('a') %}
+
+  {# Tool A card #}
+  <g id="TOOL_A">
+    <rect x="{{ card_x_a }}" y="{{ card_y }}" width="{{ card_w }}" height="{{ card_h }}" rx="12"
+      fill="{{ 'rgba(0,210,200,0.06)' if winner == 'a' else 'rgba(0,210,200,0.02)' }}"
+      stroke="{{ 'rgba(0,210,200,0.2)' if winner == 'a' else 'rgba(0,210,200,0.08)' }}" stroke-width="1"/>
+
+    {# Icon #}
+    <rect x="{{ card_x_a + card_w/2 - 28 }}" y="{{ card_y + 20 }}" width="56" height="56" rx="14" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+    <text id="TOOL_A_ICON" x="{{ card_x_a + card_w/2 }}" y="{{ card_y + 58 }}" text-anchor="middle" font-size="28">{{ data.tool_a.icon | default('🦙') }}</text>
+
+    <text id="TOOL_A_NAME" x="{{ card_x_a + card_w/2 }}" y="{{ card_y + 100 }}" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">{{ data.tool_a.name }}</text>
+
+    {# Stats #}
+    {% if data.tool_a.stats %}
+    {% set stat_start_y = card_y + 125 %}
+    {% for s in data.tool_a.stats %}
+    {% set sy = stat_start_y + loop.index0 * 28 %}
+    <g id="TOOL_A_STAT_{{ loop.index0 }}">
+      <text id="TOOL_A_STAT_{{ loop.index0 }}_LABEL" x="{{ card_x_a + 20 }}" y="{{ sy }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ s.label | upper }}</text>
+      <text id="TOOL_A_STAT_{{ loop.index0 }}_VALUE" x="{{ card_x_a + card_w - 20 }}" y="{{ sy }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="{{ '#00d2c8' if winner == 'a' else 'rgba(255,255,255,0.6)' }}">{{ s.value }}</text>
+    </g>
+    {% endfor %}
+    {% endif %}
+  </g>
+
+  {# VS badge #}
+  <g id="VS_BADGE">
+    <circle cx="{{ cx }}" cy="{{ card_y + card_h / 2 }}" r="24" fill="rgba(0,210,200,0.08)" stroke="rgba(0,210,200,0.2)" stroke-width="1"/>
+    <text x="{{ cx }}" y="{{ card_y + card_h / 2 + 6 }}" text-anchor="middle" font-size="18" font-weight="800" fill="#00d2c8">VS</text>
+  </g>
+
+  {# Tool B card #}
+  <g id="TOOL_B">
+    <rect x="{{ card_x_b }}" y="{{ card_y }}" width="{{ card_w }}" height="{{ card_h }}" rx="12"
+      fill="{{ 'rgba(0,210,200,0.06)' if winner == 'b' else 'rgba(0,210,200,0.02)' }}"
+      stroke="{{ 'rgba(0,210,200,0.2)' if winner == 'b' else 'rgba(0,210,200,0.08)' }}" stroke-width="1"/>
+
+    <rect x="{{ card_x_b + card_w/2 - 28 }}" y="{{ card_y + 20 }}" width="56" height="56" rx="14" fill="rgba(0,210,200,0.06)" stroke="rgba(0,210,200,0.15)" stroke-width="1"/>
+    <text id="TOOL_B_ICON" x="{{ card_x_b + card_w/2 }}" y="{{ card_y + 58 }}" text-anchor="middle" font-size="28">{{ data.tool_b.icon | default('🧪') }}</text>
+
+    <text id="TOOL_B_NAME" x="{{ card_x_b + card_w/2 }}" y="{{ card_y + 100 }}" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">{{ data.tool_b.name }}</text>
+
+    {% if data.tool_b.stats %}
+    {% set stat_start_y = card_y + 125 %}
+    {% for s in data.tool_b.stats %}
+    {% set sy = stat_start_y + loop.index0 * 28 %}
+    <g id="TOOL_B_STAT_{{ loop.index0 }}">
+      <text id="TOOL_B_STAT_{{ loop.index0 }}_LABEL" x="{{ card_x_b + 20 }}" y="{{ sy }}" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ s.label | upper }}</text>
+      <text id="TOOL_B_STAT_{{ loop.index0 }}_VALUE" x="{{ card_x_b + card_w - 20 }}" y="{{ sy }}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="{{ '#00d2c8' if winner == 'b' else 'rgba(255,255,255,0.6)' }}">{{ s.value }}</text>
+    </g>
+    {% endfor %}
+    {% endif %}
+  </g>
+
+  {# --- Verdict --- #}
+  {% if data.verdict %}
+  <text id="VERDICT" x="{{ cx }}" y="{{ height - 60 }}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(255,255,255,0.35)" letter-spacing="1">{{ data.verdict }}</text>
+  {% endif %}
+</g>
+
+</svg>

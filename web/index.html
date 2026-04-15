@@ -58,9 +58,13 @@
         </div>
 
         <div class="sidebar-section sidebar-actions">
-          <button class="btn btn-export" id="btnExport" onclick="exportPng()" disabled>
-            <span class="btn-icon">&#11015;</span> Export PNG
+          <button class="btn btn-export" id="btnExportBoth" onclick="exportBoth()" disabled>
+            <span class="btn-icon">&#11015;</span> Export PNG + SVG
           </button>
+          <div class="export-split">
+            <button class="btn btn-secondary" id="btnExportPng" onclick="exportPng()" disabled>PNG only</button>
+            <button class="btn btn-secondary" id="btnExportSvg" onclick="exportSvg()" disabled>SVG only</button>
+          </div>
         </div>
       </div>
     </aside>
