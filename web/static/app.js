@@ -9,6 +9,19 @@ let selectedSize = "x_landscape";
 let currentData = {};
 let previewTimer = null;
 let autoPreview = true;
+let activeIconPicker = null;
+
+// ── Icon library — organized by category ──
+const ICON_LIBRARY = {
+  "Tech & AI": ["🤖","🧠","💻","🖥️","⚙️","🔧","🛠️","💾","📡","🔌","🧬","🔬","🧪","🏗️","📱","⌨️","🖱️","🪄","✨","🌐"],
+  "Data & Charts": ["📊","📈","📉","🔢","🧮","📋","🗂️","💹","🎯","📐","🔍","🔎","📌","📍","🗃️","💡","📝","🗒️","📃","📄"],
+  "Signals": ["🔥","⚡","💥","🚀","⭐","🌟","💫","🏆","🥇","🥈","🥉","🎖️","🏅","👑","💎","🔔","📣","📢","🎪","🎉"],
+  "Arrows & Status": ["⬆️","⬇️","↗️","↘️","🔺","🔻","▲","▼","✅","❌","⚠️","🟢","🔴","🟡","🟠","🔵","⏫","⏬","↕️","🔄"],
+  "Tools & Objects": ["🦙","🐍","🦀","🐙","🐳","🐋","🦊","🐝","🕸️","🌊","🗡️","🛡️","⚔️","🏹","🪝","🔗","🔑","🔒","🧲","🪄"],
+  "Misc": ["📰","📬","📧","💌","🗞️","📖","📚","🎓","🎨","🖌️","🎭","🏷️","💬","💭","🗯️","👁️","👀","🫶","👍","🤝"],
+};
+
+const ALL_ICONS = Object.values(ICON_LIBRARY).flat();
 
 const FAMILY_ICONS = {
   hero: "🎯",
@@ -55,7 +68,7 @@ const FIELD_SCHEMAS = {
   ],
   surging_a: [
     { group: "Tool Info", fields: [
-      { key: "icon", label: "Icon (emoji)", type: "text" },
+      { key: "icon", label: "Icon", type: "icon" },
       { key: "category", label: "Category", type: "text" },
       { key: "tool_name", label: "Tool Name", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
@@ -133,12 +146,12 @@ const FIELD_SCHEMAS = {
     ]},
     { group: "Tool A", fields: [
       { key: "tool_a.name", label: "Name", type: "text" },
-      { key: "tool_a.icon", label: "Icon (emoji)", type: "text" },
+      { key: "tool_a.icon", label: "Icon", type: "icon" },
       { key: "tool_a.stats", label: "Stats", type: "array_objects", subfields: ["label", "value"] },
     ]},
     { group: "Tool B", fields: [
       { key: "tool_b.name", label: "Name", type: "text" },
-      { key: "tool_b.icon", label: "Icon (emoji)", type: "text" },
+      { key: "tool_b.icon", label: "Icon", type: "icon" },
       { key: "tool_b.stats", label: "Stats", type: "array_objects", subfields: ["label", "value"] },
     ]},
     { group: "Result", fields: [
@@ -334,6 +347,8 @@ function renderEditFields() {
         groupEl.appendChild(renderArrayObjectField(field));
       } else if (field.type === "array_strings") {
         groupEl.appendChild(renderArrayStringField(field));
+      } else if (field.type === "icon") {
+        groupEl.appendChild(renderIconField(field));
       } else {
         groupEl.appendChild(renderSimpleField(field));
       }
@@ -342,6 +357,167 @@ function renderEditFields() {
     container.appendChild(groupEl);
   });
 }
+
+// Icon picker field
+function renderIconField(field) {
+  const div = document.createElement("div");
+  div.className = "field icon-field";
+  const value = getNestedValue(currentData, field.key) || "";
+
+  div.innerHTML = `
+    <label>${field.label}</label>
+    <div class="icon-selector">
+      <button class="icon-current" data-key="${field.key}" title="Click to pick icon">
+        <span class="icon-preview">${value || "+"}</span>
+        <span class="icon-label">${value ? "Change" : "Select icon"}</span>
+      </button>
+    </div>
+  `;
+
+  const btn = div.querySelector(".icon-current");
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openIconPicker(field.key, btn);
+  });
+
+  return div;
+}
+
+function openIconPicker(fieldKey, anchorBtn) {
+  closeIconPicker();
+
+  const picker = document.createElement("div");
+  picker.className = "icon-picker";
+  picker.id = "iconPicker";
+
+  // Search bar
+  const search = document.createElement("input");
+  search.className = "icon-search";
+  search.type = "text";
+  search.placeholder = "Search icons...";
+
+  // Category tabs
+  const tabs = document.createElement("div");
+  tabs.className = "icon-tabs";
+
+  const categories = Object.keys(ICON_LIBRARY);
+  let activeCategory = categories[0];
+
+  // Icon grid
+  const grid = document.createElement("div");
+  grid.className = "icon-grid";
+
+  function renderGrid(filter) {
+    grid.innerHTML = "";
+    let icons;
+    if (filter) {
+      // Search mode: show all matching (simple substring on category name for now)
+      icons = ALL_ICONS;
+    } else {
+      icons = ICON_LIBRARY[activeCategory] || [];
+    }
+
+    icons.forEach((icon) => {
+      const btn = document.createElement("button");
+      btn.className = "icon-option";
+      btn.textContent = icon;
+      btn.title = icon;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setNestedValue(currentData, fieldKey, icon);
+        // Update the anchor button display
+        const preview = anchorBtn.querySelector(".icon-preview");
+        const label = anchorBtn.querySelector(".icon-label");
+        preview.textContent = icon;
+        label.textContent = "Change";
+        closeIconPicker();
+        schedulePreview();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderTabs() {
+    tabs.innerHTML = "";
+    categories.forEach((cat) => {
+      const tab = document.createElement("button");
+      tab.className = `icon-tab ${cat === activeCategory ? "active" : ""}`;
+      tab.textContent = cat;
+      tab.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activeCategory = cat;
+        search.value = "";
+        renderTabs();
+        renderGrid(false);
+      });
+      tabs.appendChild(tab);
+    });
+  }
+
+  search.addEventListener("input", () => {
+    const q = search.value.trim().toLowerCase();
+    if (q) {
+      // Filter by category name containing query
+      grid.innerHTML = "";
+      Object.entries(ICON_LIBRARY).forEach(([cat, icons]) => {
+        if (cat.toLowerCase().includes(q)) {
+          icons.forEach((icon) => {
+            const btn = document.createElement("button");
+            btn.className = "icon-option";
+            btn.textContent = icon;
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              setNestedValue(currentData, fieldKey, icon);
+              anchorBtn.querySelector(".icon-preview").textContent = icon;
+              anchorBtn.querySelector(".icon-label").textContent = "Change";
+              closeIconPicker();
+              schedulePreview();
+            });
+            grid.appendChild(btn);
+          });
+        }
+      });
+      // If no category match, show all icons
+      if (grid.children.length === 0) renderGrid(true);
+    } else {
+      renderGrid(false);
+    }
+  });
+
+  renderTabs();
+  renderGrid(false);
+
+  picker.appendChild(search);
+  picker.appendChild(tabs);
+  picker.appendChild(grid);
+
+  // Position: append inside the icon-field
+  const fieldEl = anchorBtn.closest(".icon-field");
+  fieldEl.appendChild(picker);
+  activeIconPicker = picker;
+
+  // Close on outside click
+  setTimeout(() => {
+    document.addEventListener("click", handleOutsideClick);
+  }, 10);
+
+  search.focus();
+}
+
+function closeIconPicker() {
+  if (activeIconPicker) {
+    activeIconPicker.remove();
+    activeIconPicker = null;
+    document.removeEventListener("click", handleOutsideClick);
+  }
+}
+
+function handleOutsideClick(e) {
+  if (activeIconPicker && !activeIconPicker.contains(e.target)) {
+    closeIconPicker();
+  }
+}
+
 
 // Simple field
 function renderSimpleField(field) {

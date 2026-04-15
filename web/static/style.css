@@ -704,6 +704,160 @@ body {
 }
 
 
+/* ═══════════════════════════════
+   ICON PICKER
+   ═══════════════════════════════ */
+.icon-field {
+  position: relative;
+}
+
+.icon-selector {
+  display: flex;
+}
+
+.icon-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.icon-current:hover {
+  border-color: var(--border-hover);
+  background: var(--glow);
+}
+
+.icon-preview {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glow);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+
+.icon-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.icon-picker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  z-index: 80;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,210,200,0.06);
+  display: flex;
+  flex-direction: column;
+  max-height: 340px;
+  overflow: hidden;
+}
+
+.icon-search {
+  margin: 10px 10px 6px;
+  padding: 8px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.icon-search:focus {
+  border-color: var(--border-active);
+}
+
+.icon-search::placeholder {
+  color: var(--text-dim);
+}
+
+.icon-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 8px 6px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.icon-tabs::-webkit-scrollbar { height: 3px; }
+
+.icon-tab {
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.icon-tab:hover {
+  background: var(--glow);
+  color: var(--text-secondary);
+}
+
+.icon-tab.active {
+  background: var(--glow-strong);
+  border-color: var(--border-active);
+  color: var(--cyan);
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 3px;
+  padding: 4px 10px 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.icon-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  font-size: 20px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.icon-option:hover {
+  background: var(--glow-strong);
+  border-color: var(--border-active);
+  transform: scale(1.15);
+}
+
+
 /* ── Edit panel toggle (for tablet) ── */
 .edit-toggle-btn {
   display: none;
