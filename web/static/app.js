@@ -743,7 +743,9 @@ async function exportPng() {
   if (!selectedTemplate) return;
 
   const btn = document.getElementById("btnExport");
+  const btnOriginalHTML = btn.innerHTML;
   btn.disabled = true;
+  btn.innerHTML = `<span class="export-spinner"></span> Rendering...`;
   setStatus("Exporting PNG...");
 
   try {
@@ -759,24 +761,77 @@ async function exportPng() {
 
     if (!res.ok) throw new Error("Export failed");
 
+    const savedPath = res.headers.get("X-Saved-Path") || "";
+    const fileName = `${selectedTemplate.name}_${selectedSize}.png`;
+
+    btn.innerHTML = `<span class="btn-icon">✓</span> Downloading...`;
+
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${selectedTemplate.name}_${selectedSize}.png`;
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
     setStatus("Exported ✓");
-    setTimeout(() => setStatus("Ready"), 2500);
+    showToast("success", `Exported: ${fileName}`, savedPath ? `Saved to: ${savedPath}` : "");
+
+    btn.innerHTML = `<span class="btn-icon">✓</span> Exported!`;
+    setTimeout(() => {
+      btn.innerHTML = btnOriginalHTML;
+      setStatus("Ready");
+    }, 3000);
   } catch (err) {
     setStatus("Export failed");
+    showToast("error", "Export failed", "Check that the server is running and try again.");
     console.error("Export error:", err);
+    btn.innerHTML = btnOriginalHTML;
   } finally {
     btn.disabled = false;
   }
+}
+
+
+/* ═══════════════════════════════
+   TOAST NOTIFICATIONS
+   ═══════════════════════════════ */
+function showToast(type, title, message) {
+  // Create container if not exists
+  let container = document.getElementById("toastContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toastContainer";
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+
+  const icon = type === "success" ? "✓" : type === "error" ? "✗" : "ℹ";
+
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      ${message ? `<div class="toast-message">${message}</div>` : ""}
+    </div>
+    <button class="toast-close" onclick="this.closest('.toast').remove()">×</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Animate in
+  requestAnimationFrame(() => toast.classList.add("show"));
+
+  // Auto-remove after 6 seconds
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 6000);
 }
 
 

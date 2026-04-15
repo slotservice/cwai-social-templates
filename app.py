@@ -137,12 +137,15 @@ def api_export():
     with open(out_path, "wb") as f:
         f.write(png_bytes)
 
-    return send_file(
+    response = send_file(
         io.BytesIO(png_bytes),
         mimetype="image/png",
         as_attachment=True,
         download_name=f"{template_name}_{size_key}.png",
     )
+    response.headers["X-Saved-Path"] = str(out_path.resolve())
+    response.headers["Access-Control-Expose-Headers"] = "X-Saved-Path"
+    return response
 
 
 @app.route("/api/export-preview", methods=["POST"])
